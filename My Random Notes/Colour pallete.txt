@@ -1,0 +1,16 @@
+20 12 28 - Very dark bluey black
+68 36 52 
+48 52 109 
+78 74 78 
+133 76 48 - Brown
+52 101 36 - Dark green
+208 70 72 - Pink/red
+117 113 97 - Grey (dark wall)
+89 125 206 - Blue
+210 125 44 - Orange
+133 149 161 - Bluey grey (use for lit wall)
+109 170 44 - light blue
+210 170 153 - Pink
+109 194 202 - Greeny/blue
+218 212 94 - Sandy
+222 238 214 - Cloudy white
