@@ -14,6 +14,11 @@ def main():
     map_width = 80
     map_height = 45
 
+    # Room size/number limitations.
+    room_max_size = 10
+    room_min_size = 6
+    max_rooms = 30
+
     colors = {
         "dark_wall": libtcod.Color(117, 113, 97),
         "dark_ground": libtcod.Color(133, 76, 48)
@@ -33,8 +38,9 @@ def main():
     libtcod.console_init_root(screen_width, screen_height, "My First Rougelike", False)
     # Creates the main off-screen console.
     con = libtcod.console_new(screen_width, screen_height)
-
+    # Creates the game map and calls its make_map function.
     game_map = GameMap(map_width, map_height)
+    game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player)
 
     # Stores the keyboard and mouse input. This will be updated throughout the game loop.
     key = libtcod.Key()
@@ -83,6 +89,6 @@ def main():
 ############################################################
 
 
-# Runs the main method if engine.py is run.
+# Runs the main method if engine.py is ran.
 if __name__ == "__main__":
     main()
