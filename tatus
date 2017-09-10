@@ -1,0 +1,540 @@
+[1mdiff --git a/.idea/workspace.xml b/.idea/workspace.xml[m
+[1mindex 736b6b6..9fe47fb 100644[m
+[1m--- a/.idea/workspace.xml[m
+[1m+++ b/.idea/workspace.xml[m
+[36m@@ -2,10 +2,12 @@[m
+ <project version="4">[m
+   <component name="ChangeListManager">[m
+     <list default="true" id="3ecefdab-8b94-4eb1-91f3-feefaff8abdb" name="Default" comment="">[m
+[31m-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/map_objects/rectangle.py" />[m
+[32m+[m[32m      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fov_functions.py" />[m
+       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />[m
+[32m+[m[32m      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/My Random Notes/Colour pallete.txt" afterPath="$PROJECT_DIR$/My Random Notes/Colour pallete.txt" />[m
+       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/engine.py" afterPath="$PROJECT_DIR$/engine.py" />[m
+[31m-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/map_objects/game_map.py" afterPath="$PROJECT_DIR$/map_objects/game_map.py" />[m
+[32m+[m[32m      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/map_objects/tile.py" afterPath="$PROJECT_DIR$/map_objects/tile.py" />[m
+[32m+[m[32m      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/render_functions.py" afterPath="$PROJECT_DIR$/render_functions.py" />[m
+     </list>[m
+     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />[m
+     <option name="TRACKING_ENABLED" value="true" />[m
+[36m@@ -16,16 +18,16 @@[m
+   </component>[m
+   <component name="CoverageDataManager">[m
+     <SUITE FILE_PATH="coverage/project$game_map.coverage" NAME="game_map Coverage Results" MODIFIED="1504985335037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/map_objects" />[m
+[31m-    <SUITE FILE_PATH="coverage/project$engine.coverage" NAME="engine Coverage Results" MODIFIED="1504986150843" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />[m
+[32m+[m[32m    <SUITE FILE_PATH="coverage/project$engine.coverage" NAME="engine Coverage Results" MODIFIED="1505037421602" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />[m
+   </component>[m
+   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />[m
+   <component name="FileEditorManager">[m
+     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">[m
+[31m-      <file leaf-file-name="engine.py" pinned="false" current-in-tab="false">[m
+[32m+[m[32m      <file leaf-file-name="engine.py" pinned="false" current-in-tab="true">[m
+         <entry file="file://$PROJECT_DIR$/engine.py">[m
+           <provider selected="true" editor-type-id="text-editor">[m
+[31m-            <state relative-caret-position="408">[m
+[31m-              <caret line="42" column="93" lean-forward="false" selection-start-line="42" selection-start-column="93" selection-end-line="42" selection-end-column="93" />[m
+[32m+[m[32m            <state relative-caret-position="306">[m
+[32m+[m[32m              <caret line="42" column="20" lean-forward="true" selection-start-line="42" selection-start-column="20" selection-end-line="42" selection-end-column="20" />[m
+               <folding>[m
+                 <element signature="e#0#27#0" expanded="true" />[m
+               </folding>[m
+[36m@@ -33,20 +35,50 @@[m
+           </provider>[m
+         </entry>[m
+       </file>[m
+[32m+[m[32m      <file leaf-file-name="render_functions.py" pinned="false" current-in-tab="false">[m
+[32m+[m[32m        <entry file="file://$PROJECT_DIR$/render_functions.py">[m
+[32m+[m[32m          <provider selected="true" editor-type-id="text-editor">[m
+[32m+[m[32m            <state relative-caret-position="289">[m
+[32m+[m[32m              <caret line="17" column="31" lean-forward="true" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />[m
+[32m+[m[32m              <folding />[m
+[32m+[m[32m            </state>[m
+[32m+[m[32m          </provider>[m
+[32m+[m[32m        </entry>[m
+[32m+[m[32m      </file>[m
+[32m+[m[32m      <file leaf-file-name="fov_functions.py" pinned="false" current-in-tab="false">[m
+[32m+[m[32m        <entry file="file://$PROJECT_DIR$/fov_functions.py">[m
+[32m+[m[32m          <provider selected="true" editor-type-id="text-editor">[m
+[32m+[m[32m            <state relative-caret-position="357">[m
+[32m+[m[32m              <caret line="21" column="51" lean-forward="true" selection-start-line="21" selection-start-column="51" selection-end-line="21" selection-end-column="51" />[m
+[32m+[m[32m              <folding />[m
+[32m+[m[32m            </state>[m
+[32m+[m[32m          </provider>[m
+[32m+[m[32m        </entry>[m
+[32m+[m[32m      </file>[m
+[32m+[m[32m      <file leaf-file-name="entity.py" pinned="false" current-in-tab="false">[m
+[32m+[m[32m        <entry file="file://$PROJECT_DIR$/entity.py">[m
+[32m+[m[32m          <provider selected="true" editor-type-id="text-editor">[m
+[32m+[m[32m            <state relative-caret-position="238">[m
+[32m+[m[32m              <caret line="14" column="20" lean-forward="true" selection-start-line="14" selection-start-column="20" selection-end-line="14" selection-end-column="20" />[m
+[32m+[m[32m              <folding />[m
+[32m+[m[32m            </state>[m
+[32m+[m[32m          </provider>[m
+[32m+[m[32m        </entry>[m
+[32m+[m[32m      </file>[m
+       <file leaf-file-name="tile.py" pinned="false" current-in-tab="false">[m
+         <entry file="file://$PROJECT_DIR$/map_objects/tile.py">[m
+           <provider selected="true" editor-type-id="text-editor">[m
+[31m-            <state relative-caret-position="221">[m
+[31m-              <caret line="13" column="38" lean-forward="false" selection-start-line="13" selection-start-column="38" selection-end-line="13" selection-end-column="38" />[m
+[32m+[m[32m            <state relative-caret-position="85">[m
+[32m+[m[32m              <caret line="5" column="49" lean-forward="false" selection-start-line="5" selection-start-column="32" selection-end-line="5" selection-end-column="49" />[m
+               <folding />[m
+             </state>[m
+           </provider>[m
+         </entry>[m
+       </file>[m
+[31m-      <file leaf-file-name="game_map.py" pinned="false" current-in-tab="true">[m
+[32m+[m[32m      <file leaf-file-name="game_map.py" pinned="false" current-in-tab="false">[m
+         <entry file="file://$PROJECT_DIR$/map_objects/game_map.py">[m
+           <provider selected="true" editor-type-id="text-editor">[m
+[31m-            <state relative-caret-position="384">[m
+[32m+[m[32m            <state relative-caret-position="741">[m
+               <caret line="99" column="30" lean-forward="false" selection-start-line="99" selection-start-column="30" selection-end-line="99" selection-end-column="30" />[m
+               <folding>[m
+                 <element signature="e#0#82#0" expanded="true" />[m
+[36m@@ -59,17 +91,7 @@[m
+         <entry file="file://$PROJECT_DIR$/map_objects/rectangle.py">[m
+           <provider selected="true" editor-type-id="text-editor">[m
+             <state relative-caret-position="119">[m
+[31m-              <caret line="7" column="21" lean-forward="true" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />[m
+[31m-              <folding />[m
+[31m-            </state>[m
+[31m-          </provider>[m
+[31m-        </entry>[m
+[31m-      </file>[m
+[31m-      <file leaf-file-name="render_functions.py" pinned="false" current-in-tab="false">[m
+[31m-        <entry file="file://$PROJECT_DIR$/render_functions.py">[m
+[31m-          <provider selected="true" editor-type-id="text-editor">[m
+[31m-            <state relative-caret-position="51">[m
+[31m-              <caret line="3" column="38" lean-forward="false" selection-start-line="3" selection-start-column="30" selection-end-line="3" selection-end-column="38" />[m
+[32m+[m[32m              <caret line="7" column="21" lean-forward="false" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />[m
+               <folding />[m
+             </state>[m
+           </provider>[m
+[36m@@ -85,16 +107,6 @@[m
+           </provider>[m
+         </entry>[m
+       </file>[m
+[31m-      <file leaf-file-name="entity.py" pinned="false" current-in-tab="false">[m
+[31m-        <entry file="file://$PROJECT_DIR$/entity.py">[m
+[31m-          <provider selected="true" editor-type-id="text-editor">[m
+[31m-            <state relative-caret-position="187">[m
+[31m-              <caret line="11" column="27" lean-forward="false" selection-start-line="11" selection-start-column="27" selection-end-line="11" selection-end-column="27" />[m
+[31m-              <folding />[m
+[31m-            </state>[m
+[31m-          </provider>[m
+[31m-        </entry>[m
+[31m-      </file>[m
+     </leaf>[m
+   </component>[m
+   <component name="FileTemplateManagerImpl">[m
+[36m@@ -117,11 +129,12 @@[m
+       <list>[m
+         <option value="$PROJECT_DIR$/input_handlers.py" />[m
+         <option value="$PROJECT_DIR$/entity.py" />[m
+[32m+[m[32m        <option value="$PROJECT_DIR$/map_objects/rectangle.py" />[m
+[32m+[m[32m        <option value="$PROJECT_DIR$/map_objects/game_map.py" />[m
+[32m+[m[32m        <option value="$PROJECT_DIR$/fov_functions.py" />[m
+         <option value="$PROJECT_DIR$/map_objects/tile.py" />[m
+         <option value="$PROJECT_DIR$/render_functions.py" />[m
+[31m-        <option value="$PROJECT_DIR$/map_objects/rectangle.py" />[m
+         <option value="$PROJECT_DIR$/engine.py" />[m
+[31m-        <option value="$PROJECT_DIR$/map_objects/game_map.py" />[m
+       </list>[m
+     </option>[m
+   </component>[m
+[36m@@ -153,6 +166,7 @@[m
+     </navigator>[m
+     <panes>[m
+       <pane id="Scratches" />[m
+[32m+[m[32m      <pane id="Scope" />[m
+       <pane id="ProjectPane">[m
+         <subPane>[m
+           <PATH>[m
+[36m@@ -181,7 +195,6 @@[m
+           </PATH>[m
+         </subPane>[m
+       </pane>[m
+[31m-      <pane id="Scope" />[m
+     </panes>[m
+   </component>[m
+   <component name="PropertiesComponent">[m
+[36m@@ -446,6 +459,66 @@[m
+     <watches-manager />[m
+   </component>[m
+   <component name="editorHistoryManager">[m
+[32m+[m[32m    <entry file="file://$PROJECT_DIR$/engine.py">[m
+[32m+[m[32m      <provider selected="true" editor-type-id="text-editor">[m
+[32m+[m[32m        <state relative-caret-position="714">[m
+[32m+[m[32m          <caret line="42" column="93" lean-forward="false" selection-start-line="42" selection-start-column="93" selection-end-line="42" selection-end-column="93" />[m
+[32m+[m[32m          <folding>[m
+[32m+[m[32m            <element signature="e#0#27#0" expanded="true" />[m
+[32m+[m[32m          </folding>[m
+[32m+[m[32m        </state>[m
+[32m+[m[32m      </provider>[m
+[32m+[m[32m    </entry>[m
+[32m+[m[32m    <entry file="file://$PROJECT_DIR$/map_objects/tile.py">[m
+[32m+[m[32m      <provider selected="true" editor-type-id="text-editor">[m
+[32m+[m[32m        <state relative-caret-position="221">[m
+[32m+[m[32m          <caret line="13" column="38" lean-forward="false" selection-start-line="13" selection-start-column="38" selection-end-line="13" selection-end-column="38" />[m
+[32m+[m[32m          <folding />[m
+[32m+[m[32m        </state>[m
+[32m+[m[32m      </provider>[m
+[32m+[m[32m    </entry>[m
+[32m+[m[32m    <entry file="file://$PROJECT_DIR$/map_objects/rectangle.py">[m
+[32m+[m[32m      <provider selected="true" editor-type-id="text-editor">[m
+[32m+[m[32m        <state relative-caret-position="119">[m
+[32m+[m[32m          <caret line="7" column="21" lean-forward="true" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />[m
+[32m+[m[32m          <folding />[m
+[32m+[m[32m        </state>[m
+[32m+[m[32m      </provider>[m
+[32m+[m[32m    </entry>[m
+[32m+[m[32m    <entry file="file://$PROJECT_DIR$/render_functions.py">[m
+[32m+[m[32m      <provider selected="true" editor-type-id="text-editor">[m
+[32m+[m[32m        <state relative-caret-position="51">[m
+[32m+[m[32m          <caret line="3" column="38" lean-forward="false" selection-start-line="3" selection-start-column="30" selection-end-line="3" selection-end-column="38" />[m
+[32m+[m[32m          <folding />[m
+[32m+[m[32m        </state>[m
+[32m+[m[32m      </provider>[m
+[32m+[m[32m    </entry>[m
+[32m+[m[32m    <entry file="file://$PROJECT_DIR$/input_handlers.py">[m
+[32m+[m[32m      <provider selected="true" editor-type-id="text-editor">[m
+[32m+[m[32m        <state relative-caret-position="17">[m
+[32m+[m[32m          <caret line="1" column="0" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />[m
+[32m+[m[32m          <folding />[m
+[32m+[m[32m        </state>[m
+[32m+[m[32m      </provider>[m
+[32m+[m[32m    </entry>[m
+[32m+[m[32m    <entry file="file://$PROJECT_DIR$/entity.py">[m
+[32m+[m[32m      <provider selected="true" editor-type-id="text-editor">[m
+[32m+[m[32m        <state relative-caret-position="187">[m
+[32m+[m[32m          <caret line="11" column="27" lean-forward="false" selection-start-line="11" selection-start-column="27" selection-end-line="11" selection-end-column="27" />[m
+[32m+[m[32m          <folding />[m
+[32m+[m[32m        </state>[m
+[32m+[m[32m      </provider>[m
+[32m+[m[32m    </entry>[m
+[32m+[m[32m    <entry file="file://$PROJECT_DIR$/map_objects/game_map.py">[m
+[32m+[m[32m      <provider selected="true" editor-type-id="text-editor">[m
+[32m+[m[32m        <state relative-caret-position="1683">[m
+[32m+[m[32m          <caret line="99" column="30" lean-forward="false" selection-start-line="99" selection-start-column="30" selection-end-line="99" selection-end-column="30" />[m
+[32m+[m[32m          <folding>[m
+[32m+[m[32m            <element signature="e#0#82#0" expanded="true" />[m
+[32m+[m[32m          </folding>[m
+[32m+[m[32m        </state>[m
+[32m+[m[32m      </provider>[m
+[32m+[m[32m    </entry>[m
+     <entry file="file://$PROJECT_DIR$/engine.py">[m
+       <provider selected="true" editor-type-id="text-editor">[m
+         <state relative-caret-position="0">[m
+[36m@@ -506,54 +579,62 @@[m
+         </state>[m
+       </provider>[m
+     </entry>[m
+[31m-    <entry file="file://$PROJECT_DIR$/entity.py">[m
+[32m+[m[32m    <entry file="file://$PROJECT_DIR$/map_objects/game_map.py">[m
+       <provider selected="true" editor-type-id="text-editor">[m
+[31m-        <state relative-caret-position="187">[m
+[31m-          <caret line="11" column="27" lean-forward="false" selection-start-line="11" selection-start-column="27" selection-end-line="11" selection-end-column="27" />[m
+[32m+[m[32m        <state relative-caret-position="741">[m
+[32m+[m[32m          <caret line="99" column="30" lean-forward="false" selection-start-line="99" selection-start-column="30" selection-end-line="99" selection-end-column="30" />[m
+[32m+[m[32m          <folding>[m
+[32m+[m[32m            <element signature="e#0#82#0" expanded="true" />[m
+[32m+[m[32m          </folding>[m
+[32m+[m[32m        </state>[m
+[32m+[m[32m      </provider>[m
+[32m+[m[32m    </entry>[m
+[32m+[m[32m    <entry file="file://$PROJECT_DIR$/map_objects/rectangle.py">[m
+[32m+[m[32m      <provider selected="true" editor-type-id="text-editor">[m
+[32m+[m[32m        <state relative-caret-position="119">[m
+[32m+[m[32m          <caret line="7" column="21" lean-forward="false" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />[m
+           <folding />[m
+         </state>[m
+       </provider>[m
+     </entry>[m
+[31m-    <entry file="file://$PROJECT_DIR$/render_functions.py">[m
+[32m+[m[32m    <entry file="file://$PROJECT_DIR$/fov_functions.py">[m
+       <provider selected="true" editor-type-id="text-editor">[m
+[31m-        <state relative-caret-position="51">[m
+[31m-          <caret line="3" column="38" lean-forward="false" selection-start-line="3" selection-start-column="30" selection-end-line="3" selection-end-column="38" />[m
+[32m+[m[32m        <state relative-caret-position="357">[m
+[32m+[m[32m          <caret line="21" column="51" lean-forward="true" selection-start-line="21" selection-start-column="51" selection-end-line="21" selection-end-column="51" />[m
+           <folding />[m
+         </state>[m
+       </provider>[m
+     </entry>[m
+[31m-    <entry file="file://$PROJECT_DIR$/map_objects/tile.py">[m
+[32m+[m[32m    <entry file="file://$PROJECT_DIR$/entity.py">[m
+       <provider selected="true" editor-type-id="text-editor">[m
+[31m-        <state relative-caret-position="221">[m
+[31m-          <caret line="13" column="38" lean-forward="false" selection-start-line="13" selection-start-column="38" selection-end-line="13" selection-end-column="38" />[m
+[32m+[m[32m        <state relative-caret-position="238">[m
+[32m+[m[32m          <caret line="14" column="20" lean-forward="true" selection-start-line="14" selection-start-column="20" selection-end-line="14" selection-end-column="20" />[m
+           <folding />[m
+         </state>[m
+       </provider>[m
+     </entry>[m
+[31m-    <entry file="file://$PROJECT_DIR$/engine.py">[m
+[32m+[m[32m    <entry file="file://$PROJECT_DIR$/map_objects/tile.py">[m
+       <provider selected="true" editor-type-id="text-editor">[m
+[31m-        <state relative-caret-position="408">[m
+[31m-          <caret line="42" column="93" lean-forward="false" selection-start-line="42" selection-start-column="93" selection-end-line="42" selection-end-column="93" />[m
+[31m-          <folding>[m
+[31m-            <element signature="e#0#27#0" expanded="true" />[m
+[31m-          </folding>[m
+[32m+[m[32m        <state relative-caret-position="85">[m
+[32m+[m[32m          <caret line="5" column="49" lean-forward="false" selection-start-line="5" selection-start-column="32" selection-end-line="5" selection-end-column="49" />[m
+[32m+[m[32m          <folding />[m
+         </state>[m
+       </provider>[m
+     </entry>[m
+[31m-    <entry file="file://$PROJECT_DIR$/map_objects/rectangle.py">[m
+[32m+[m[32m    <entry file="file://$PROJECT_DIR$/render_functions.py">[m
+       <provider selected="true" editor-type-id="text-editor">[m
+[31m-        <state relative-caret-position="119">[m
+[31m-          <caret line="7" column="21" lean-forward="true" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />[m
+[32m+[m[32m        <state relative-caret-position="289">[m
+[32m+[m[32m          <caret line="17" column="31" lean-forward="true" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />[m
+           <folding />[m
+         </state>[m
+       </provider>[m
+     </entry>[m
+[31m-    <entry file="file://$PROJECT_DIR$/map_objects/game_map.py">[m
+[32m+[m[32m    <entry file="file://$PROJECT_DIR$/engine.py">[m
+       <provider selected="true" editor-type-id="text-editor">[m
+[31m-        <state relative-caret-position="384">[m
+[31m-          <caret line="99" column="30" lean-forward="false" selection-start-line="99" selection-start-column="30" selection-end-line="99" selection-end-column="30" />[m
+[32m+[m[32m        <state relative-caret-position="306">[m
+[32m+[m[32m          <caret line="42" column="20" lean-forward="true" selection-start-line="42" selection-start-column="20" selection-end-line="42" selection-end-column="20" />[m
+           <folding>[m
+[31m-            <element signature="e#0#82#0" expanded="true" />[m
+[32m+[m[32m            <element signature="e#0#27#0" expanded="true" />[m
+           </folding>[m
+         </state>[m
+       </provider>[m
+[1mdiff --git a/My Random Notes/Colour pallete.txt b/My Random Notes/Colour pallete.txt[m
+[1mindex ee2f9c6..e37df66 100644[m
+[1m--- a/My Random Notes/Colour pallete.txt[m	
+[1m+++ b/My Random Notes/Colour pallete.txt[m	
+[36m@@ -1,11 +1,11 @@[m
+ 20 12 28 - Very dark bluey black[m
+[31m-68 36 52 [m
+[32m+[m[32m68 36 52 - Dark blacky grey (dark floor)[m
+ 48 52 109 [m
+ 78 74 78 [m
+[31m-133 76 48 - Brown[m
+[32m+[m[32m133 76 48 - Brown (lit floor)[m
+ 52 101 36 - Dark green[m
+ 208 70 72 - Pink/red[m
+[31m-117 113 97 - Grey (dark wall)[m
+[32m+[m[32m117 113 97 - Greyish[m
+ 89 125 206 - Blue[m
+ 210 125 44 - Orange[m
+ 133 149 161 - Bluey grey (use for lit wall)[m
+[36m@@ -13,4 +13,7 @@[m
+ 210 170 153 - Pink[m
+ 109 194 202 - Greeny/blue[m
+ 218 212 94 - Sandy[m
+[31m-222 238 214 - Cloudy white[m
+\ No newline at end of file[m
+[32m+[m[32m222 238 214 - Cloudy white[m
+[32m+[m
+[32m+[m[32mMY OWN:[m
+[32m+[m[32m64,64,64 - Dark grey (dark wall)[m
+\ No newline at end of file[m
+[1mdiff --git a/__pycache__/render_functions.cpython-36.pyc b/__pycache__/render_functions.cpython-36.pyc[m
+[1mindex f14c138..94dc6f0 100644[m
+Binary files a/__pycache__/render_functions.cpython-36.pyc and b/__pycache__/render_functions.cpython-36.pyc differ
+[1mdiff --git a/engine.py b/engine.py[m
+[1mindex e86c54e..8c9e154 100644[m
+[1m--- a/engine.py[m
+[1m+++ b/engine.py[m
+[36m@@ -1,4 +1,6 @@[m
+ import libtcodpy as libtcod[m
+[32m+[m[32mfrom fov_functions import initialise_fov[m
+[32m+[m[32mfrom fov_functions import recompute_fov[m
+ from map_objects.game_map import GameMap[m
+ from entity import Entity[m
+ from input_handlers import handle_keys[m
+[36m@@ -19,10 +21,16 @@[m [mdef main():[m
+     room_min_size = 6[m
+     max_rooms = 30[m
+ [m
+[31m-    colors = {[m
+[31m-        "dark_wall": libtcod.Color(117, 113, 97),[m
+[31m-        "dark_ground": libtcod.Color(133, 76, 48)[m
+[32m+[m[32m    # FOV (Field of view) limitations.[m
+[32m+[m[32m    fov_algorithm = 0 # Uses the default algorithm libtcod uses.[m
+[32m+[m[32m    fov_light_walls = True # Whether to 'light up' the walls we see.[m
+[32m+[m[32m    fov_radius = 10 # Tells us how far the player can see.[m
+ [m
+[32m+[m[32m    colors = {[m
+[32m+[m[32m        "dark_wall": libtcod.Color(64, 64, 64),[m
+[32m+[m[32m        "dark_ground": libtcod.Color(68, 36, 52),[m
+[32m+[m[32m        "light_wall": libtcod.Color(133, 149, 161),[m
+[32m+[m[32m        "light_ground": libtcod.Color(133, 76, 48)[m
+     }[m
+ [m
+     # Creates the player object.[m
+[36m@@ -42,6 +50,12 @@[m [mdef main():[m
+     game_map = GameMap(map_width, map_height)[m
+     game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player)[m
+ [m
+[32m+[m[32m    # Whether to recompute the fov (Would be false if the player didn't move that turn).[m
+[32m+[m[32m    # True by default because we have to compute it when the game starts.[m
+[32m+[m[32m    fov_recompute = True[m
+[32m+[m[32m    # Computes the fov_map[m
+[32m+[m[32m    fov_map = initialise_fov(game_map)[m
+[32m+[m
+     # Stores the keyboard and mouse input. This will be updated throughout the game loop.[m
+     key = libtcod.Key()[m
+     mouse = libtcod.Mouse()[m
+[36m@@ -53,8 +67,15 @@[m [mdef main():[m
+         # Captures input - will update key and mouse variables with the input.[m
+         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)[m
+ [m
+[32m+[m[32m        # Recomputes the FOV if necessary.[m
+[32m+[m[32m        if fov_recompute:[m
+[32m+[m[32m            recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)[m
+[32m+[m
+         # Draws all entities to the off-screen console and blits the console to the root.[m
+[31m-        render_all(con, entities, game_map, screen_width, screen_height, colors)[m
+[32m+[m[32m        render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, screen_height, colors)[m
+[32m+[m
+[32m+[m[32m        # Don't recompute the fov/repaint the tiles until after the player moves.[m
+[32m+[m[32m        fov_recompute = False[m
+ [m
+         # Flushes/draws the screen.[m
+         libtcod.console_flush()[m
+[36m@@ -77,6 +98,8 @@[m [mdef main():[m
+             # Alters the player's position by dx/dy amount.[m
+             if not game_map.is_blocked(player.x + dx, player.y + dy):[m
+                 player.move(dx, dy)[m
+[32m+[m[32m                # Recomputes the FOV map now the player has moved.[m
+[32m+[m[32m                fov_recompute = True[m
+ [m
+         # Exits the loop which exits the game.[m
+         if exit:[m
+[1mdiff --git a/fov_functions.py b/fov_functions.py[m
+[1mindex e69de29..da5a76e 100644[m
+[1m--- a/fov_functions.py[m
+[1m+++ b/fov_functions.py[m
+[36m@@ -0,0 +1,31 @@[m
+[32m+[m[32mimport libtcodpy as libtcod[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef initialise_fov(game_map):[m
+[32m+[m[32m    """[m
+[32m+[m[32m    Generates the FOV map for further use.[m
+[32m+[m[32m    :param game_map: 2D list of Tiles.[m
+[32m+[m[32m    :return: A libtcod map.[m
+[32m+[m[32m    """[m
+[32m+[m[32m    fov_map = libtcod.map_new(game_map.width, game_map.height)[m
+[32m+[m
+[32m+[m[32m    for y in range(game_map.height):[m
+[32m+[m[32m        for x in range(game_map.width):[m
+[32m+[m[32m            libtcod.map_set_properties(fov_map, x, y, not game_map.tiles[x][y].block_sight,[m
+[32m+[m[32m                                       not game_map.tiles[x][y].blocked)[m
+[32m+[m
+[32m+[m[32m        return fov_map[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef recompute_fov(fov_map, x, y, radius, light_walls=True, algorithm = 0):[m
+[32m+[m[32m    """[m
+[32m+[m[32m    Recomputes the FOV using a libtcodpy algorithm.[m
+[32m+[m[32m    :param fov_map: The litcodpy map generated in initialise_fov().[m
+[32m+[m[32m    :param x: Current player position.[m
+[32m+[m[32m    :param y: Current player position.[m
+[32m+[m[32m    :param radius: FOV radius.[m
+[32m+[m[32m    :param light_walls: Should the walls be lit?[m
+[32m+[m[32m    :param algorithm: Which libtcodpy algorithm to use.[m
+[32m+[m[32m    :return:[m[41m [m
+[32m+[m[32m    """[m
+[32m+[m[32m    libtcod.map_compute_fov(fov_map, x, y, radius, light_walls, algorithm)[m
+\ No newline at end of file[m
+[1mdiff --git a/map_objects/__pycache__/tile.cpython-36.pyc b/map_objects/__pycache__/tile.cpython-36.pyc[m
+[1mindex bd9bd93..6cb1524 100644[m
+Binary files a/map_objects/__pycache__/tile.cpython-36.pyc and b/map_objects/__pycache__/tile.cpython-36.pyc differ
+[1mdiff --git a/map_objects/tile.py b/map_objects/tile.py[m
+[1mindex ca5fe83..0289403 100644[m
+[1m--- a/map_objects/tile.py[m
+[1m+++ b/map_objects/tile.py[m
+[36m@@ -12,3 +12,6 @@[m [mclass Tile:[m
+             block_sight = blocked[m
+ [m
+         self.block_sight = block_sight[m
+[32m+[m[32m        # Stores whether the tile has been explored by the player.[m
+[32m+[m[32m        # All tiles start off unexplored.[m
+[32m+[m[32m        self.explored = False[m
+[1mdiff --git a/render_functions.py b/render_functions.py[m
+[1mindex 9fa4bdd..b2f538b 100644[m
+[1m--- a/render_functions.py[m
+[1m+++ b/render_functions.py[m
+[36m@@ -1,22 +1,35 @@[m
+ import libtcodpy as libtcod[m
+ [m
+ [m
+[31m-def render_all(con, entities, game_map, screen_width, screen_height, colors):[m
+[31m-[m
+[31m-    # Draw all tiles in the game map.[m
+[31m-    for y in range(game_map.height):[m
+[31m-        for x in range(game_map.width):[m
+[31m-            # Stores whether the wall is blocked or not.[m
+[31m-            wall_block = game_map.tiles[x][y].block_sight[m
+[31m-            # Alters the tile colour depending on if it is blocked or not.[m
+[31m-            if wall_block:[m
+[31m-                libtcod.console_set_char_background(con, x, y, colors.get("dark_wall"), libtcod.BKGND_SET)[m
+[31m-            else:[m
+[31m-                libtcod.console_set_char_background(con, x, y, colors.get("dark_ground"), libtcod.BKGND_SET)[m
+[32m+[m[32mdef render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, screen_height, colors):[m
+[32m+[m[32m    # Only renders walls if the fov has changed or game just started.[m
+[32m+[m[32m    if fov_recompute:[m
+[32m+[m[32m        # Draw all tiles in the game map.[m
+[32m+[m[32m        for y in range(game_map.height):[m
+[32m+[m[32m            for x in range(game_map.width):[m
+[32m+[m[32m                # Stores whether the tile is in the fov (field of view).[m
+[32m+[m[32m                visible = libtcod.map_is_in_fov(fov_map, x, y)[m
+[32m+[m[32m                # Stores whether the wall is blocked or not.[m
+[32m+[m[32m                wall_block = game_map.tiles[x][y].block_sight[m
+[32m+[m
+[32m+[m[32m                # Colours the visible tiles.[m
+[32m+[m[32m                if visible:[m
+[32m+[m[32m                    if wall_block:[m
+[32m+[m[32m                        libtcod.console_set_char_background(con, x, y, colors.get("light_wall"), libtcod.BKGND_SET)[m
+[32m+[m[32m                    else:[m
+[32m+[m[32m                        libtcod.console_set_char_background(con, x , y, colors.get("light_ground"), libtcod.BKGND_SET)[m
+[32m+[m[32m                    # Sets the visible tile as 'explored'.[m
+[32m+[m[32m                    game_map.tiles[x][y].explored = True[m
+[32m+[m[32m                # Colours the tiles outside the fov if they have been explored.[m
+[32m+[m[32m                elif game_map.tiles[x][y].explored:[m
+[32m+[m[32m                    if wall_block:[m
+[32m+[m[32m                        libtcod.console_set_char_background(con, x, y, colors.get("dark_wall"), libtcod.BKGND_SET)[m
+[32m+[m[32m                    else:[m
+[32m+[m[32m                        libtcod.console_set_char_background(con, x, y, colors.get("dark_ground"), libtcod.BKGND_SET)[m
+ [m
+     # Draw all entities in the list.[m
+     for entity in entities:[m
+[31m-        draw_entity(con, entity)[m
+[32m+[m[32m        draw_entity(con, entity, fov_map)[m
+ [m
+     # Blits the main off-screen console onto the root console.[m
+     libtcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)[m
+[36m@@ -27,11 +40,13 @@[m [mdef clear_all(con, entities):[m
+         clear_entity(con, entity)[m
+ [m
+ [m
+[31m-def draw_entity(con, entity):[m
+[31m-    # Sets the default font colour.[m
+[31m-    libtcod.console_set_default_foreground(con, entity.color)[m
+[31m-    # Places the entity on the console.[m
+[31m-    libtcod.console_put_char(con, entity.x, entity.y, entity.char, libtcod.BKGND_NONE)[m
+[32m+[m[32mdef draw_entity(con, entity, fov_map):[m
+[32m+[m[32m    # Only draws the entity if it is in the player's fov.[m
+[32m+[m[32m    if libtcod.map_is_in_fov(fov_map, entity.x, entity.y):[m
+[32m+[m[32m        # Sets the default font colour.[m
+[32m+[m[32m        libtcod.console_set_default_foreground(con, entity.color)[m
+[32m+[m[32m        # Places the entity on the console.[m
+[32m+[m[32m        libtcod.console_put_char(con, entity.x, entity.y, entity.char, libtcod.BKGND_NONE)[m
+ [m
+ [m
+ def clear_entity(con, entity):[m

@@ -1,4 +1,6 @@
 import libtcodpy as libtcod
+from fov_functions import initialise_fov
+from fov_functions import recompute_fov
 from map_objects.game_map import GameMap
 from entity import Entity
 from input_handlers import handle_keys
@@ -19,10 +21,16 @@ def main():
     room_min_size = 6
     max_rooms = 30
 
-    colors = {
-        "dark_wall": libtcod.Color(117, 113, 97),
-        "dark_ground": libtcod.Color(133, 76, 48)
+    # FOV (Field of view) limitations.
+    fov_algorithm = 0 # Uses the default algorithm libtcod uses.
+    fov_light_walls = True # Whether to 'light up' the walls we see.
+    fov_radius = 10 # Tells us how far the player can see.
 
+    colors = {
+        "dark_wall": libtcod.Color(64, 64, 64),
+        "dark_ground": libtcod.Color(68, 36, 52),
+        "light_wall": libtcod.Color(133, 149, 161),
+        "light_ground": libtcod.Color(133, 76, 48)
     }
 
     # Creates the player object.
@@ -42,6 +50,12 @@ def main():
     game_map = GameMap(map_width, map_height)
     game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player)
 
+    # Whether to recompute the fov (Would be false if the player didn't move that turn).
+    # True by default because we have to compute it when the game starts.
+    fov_recompute = True
+    # Computes the fov_map
+    fov_map = initialise_fov(game_map)
+
     # Stores the keyboard and mouse input. This will be updated throughout the game loop.
     key = libtcod.Key()
     mouse = libtcod.Mouse()
@@ -53,8 +67,15 @@ def main():
         # Captures input - will update key and mouse variables with the input.
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
 
+        # Recomputes the FOV if necessary.
+        if fov_recompute:
+            recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)
+
         # Draws all entities to the off-screen console and blits the console to the root.
-        render_all(con, entities, game_map, screen_width, screen_height, colors)
+        render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, screen_height, colors)
+
+        # Don't recompute the fov/repaint the tiles until after the player moves.
+        fov_recompute = False
 
         # Flushes/draws the screen.
         libtcod.console_flush()
@@ -77,6 +98,8 @@ def main():
             # Alters the player's position by dx/dy amount.
             if not game_map.is_blocked(player.x + dx, player.y + dy):
                 player.move(dx, dy)
+                # Recomputes the FOV map now the player has moved.
+                fov_recompute = True
 
         # Exits the loop which exits the game.
         if exit:
