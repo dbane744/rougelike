@@ -1,7 +1,8 @@
 import libtcodpy as libtcod
 from random import randint  # Used for generating random room sizes and positions.
 
-
+from components.fighter import Fighter
+from components.ai import BasicMonster
 from entity import Entity
 from map_objects.tile import Tile
 from map_objects.rectangle import Rect
@@ -151,9 +152,15 @@ class GameMap:
                 # 80% chance this monster will be an Orc.
                 # 20% chance this monster will be a Troll.
                 if randint(0, 100) < 80:
-                    monster = Entity(x, y, "o", libtcod.desaturated_green, "Orc", blocks=True)
+                    fighter_component = Fighter(hp=10, defense=0, power=3)
+                    ai_component = BasicMonster()
+                    monster = Entity(x, y, "o", libtcod.desaturated_green, "Orc", blocks=True,
+                                     fighter=fighter_component, ai=ai_component)
                 else:
-                    monster = Entity(x, y, "T", libtcod.darker_green, "Troll", blocks=True)
+                    fighter_component = Fighter(hp=16, defense=1, power=4)
+                    ai_component = BasicMonster()
+                    monster = Entity(x, y, "T", libtcod.darker_green, "Troll", blocks=True,
+                                     fighter=fighter_component, ai=ai_component)
 
                 # Appends the monster to the entities list.
                 entities.append(monster)
@@ -162,6 +169,12 @@ class GameMap:
 
 
     def is_blocked(self, x, y):
+        """
+        Checks if the given tile is blocked by a blocking tile.
+        :param x: 
+        :param y: 
+        :return: 
+        """
         if self.tiles[x][y].blocked:
             return True
         else:

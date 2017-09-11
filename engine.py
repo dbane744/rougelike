@@ -1,5 +1,7 @@
 import libtcodpy as libtcod
 
+from death_functions import kill_monster, kill_player
+from components.fighter import Fighter
 from fov_functions import initialise_fov, recompute_fov
 from game_states import GameStates
 from map_objects.game_map import GameMap
@@ -37,8 +39,11 @@ def main():
         "light_ground": libtcod.Color(133, 76, 48)
     }
 
+
+    # Creates the player's fighter component.
+    fighter_component = Fighter(hp=30, defense=2, power=5)
     # Creates the player object.
-    player = Entity(0, 0, "@", libtcod.white, "Player", blocks=True)
+    player = Entity(0, 0, "@", libtcod.white, "Player", blocks=True, fighter=fighter_component)
     # Creates a list of initial static entities.
     entities = [player]
 
@@ -99,6 +104,11 @@ def main():
         fullscreen = action.get("fullscreen")
 
         ########## PLAYER'S TURN ##########
+
+        # Stores the results from the player's turn.
+        # Each index defines what action should be taken.
+        player_turn_results = []
+
         if move and game_state == GameStates.PLAYERS_TURN:
             # Stores the coordinates to move to.
             dx, dy = move
@@ -110,7 +120,9 @@ def main():
                 target = get_blocking_entities_at_location(entities, destination_x, destination_y)
                 # If there is a blocking entity:
                 if target:
-                    print("You tickle the " + target.name + " while giggling loudly.")
+                    # Stores the attack results.
+                    attack_results = player.fighter.attack(target)
+                    player_turn_results.extend(attack_results)
                 # If there is no blocking entity the player will move.
                 else:
                     player.move(dx, dy)
@@ -128,14 +140,61 @@ def main():
         if fullscreen:
             libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
 
+        ### Acts of player's turn results ###
+        for player_turn_result in player_turn_results:
+            message = player_turn_result.get("message")
+            dead_entity = player_turn_result.get("dead")
+
+            if message:
+                print(message)
+
+            if dead_entity:
+                # If the dead entity is the player.
+                # Gamestate will be set to PLAYER_DEAD
+                if dead_entity == player:
+                    message, game_state = kill_player(dead_entity)
+
+                # If the dead entity is not the player it will be killed.
+                else:
+                    message = kill_monster(dead_entity)
+
+                # Prints one of the messages.
+                print(message)
+
+
         ########## ENEMY's TURN ##########
         if game_state == GameStates.ENEMY_TURN:
             for entity in entities:
-                if entity != player:
-                    print("The " + entity.name + " dances provocatively.")
+                if entity.ai:
+                    enemy_turn_results = entity.ai.take_turn(player, fov_map, game_map, entities)
 
-            # Sets the game state to the player's turn.
-            game_state = GameStates.PLAYERS_TURN
+                    for enemy_turn_result in enemy_turn_results:
+                        message = enemy_turn_result.get("message")
+                        dead_entity = enemy_turn_result.get("dead")
+
+                        if message:
+                            print(message)
+
+                        if dead_entity:
+                            # If the dead entity is the player.
+                            # Gamestate will be set to PLAYER_DEAD
+                            if dead_entity == player:
+                                message, game_state = kill_player(dead_entity)
+                            # If the monster killed another monster.
+                            else:
+                                message = kill_monster(dead_entity)
+
+                            # Prints one of the death messages.
+                            print(message)
+
+                            # Prevents the else/player's turn from occurring again by breaking the for loop.
+                            if game_state == GameStates.PLAYER_DEAD:
+                                break
+
+            # If break wasn't called do this:
+            else:
+                # Sets the game state to the player's turn.
+                game_state = GameStates.PLAYERS_TURN
 ############################################################
 
 

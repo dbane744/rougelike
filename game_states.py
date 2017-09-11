@@ -6,3 +6,4 @@ class GameStates(Enum):
     # (Equivalent to 1...2...3...4 e.g ENEMY_TURN = 2)
     PLAYERS_TURN = auto()
     ENEMY_TURN = auto()
+    PLAYER_DEAD = auto()
