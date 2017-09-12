@@ -1,5 +1,6 @@
 import libtcodpy as libtcod
 
+from render_functions import RenderOrder
 from game_states import GameStates
 
 
@@ -21,5 +22,6 @@ def kill_monster(monster):
     monster.fighter = None
     monster.ai = None
     monster.Name = "remains of " + monster.name
+    monster.render_order = RenderOrder.CORPSE
 
     return death_message

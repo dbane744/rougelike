@@ -1,7 +1,15 @@
 import libtcodpy as libtcod
 
+from enum import Enum
 
-def render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, screen_height, colors):
+
+class RenderOrder(Enum):
+    CORPSE = 1
+    ITEM = 2
+    ACTOR = 3
+
+
+def render_all(con, entities, player, game_map, fov_map, fov_recompute, screen_width, screen_height, colors):
     # Only renders walls if the fov has changed or game just started.
     if fov_recompute:
         # Draw all tiles in the game map.
@@ -27,9 +35,17 @@ def render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, sc
                     else:
                         libtcod.console_set_char_background(con, x, y, colors.get("dark_ground"), libtcod.BKGND_SET)
 
+    entities_in_render_order = sorted(entities, key=lambda x: x.render_order.value)
+
     # Draw all entities in the list.
-    for entity in entities:
+    for entity in entities_in_render_order:
         draw_entity(con, entity, fov_map)
+
+
+    # Prints the hp counter to screen. :02 means the strings include 02 spaces.
+    libtcod.console_set_default_foreground(con, libtcod.white)
+    libtcod.console_print_ex(con, 1, screen_height - 2, libtcod.BKGND_NONE, libtcod.LEFT,
+                             "HP: {0:02}/{1:02}".format(player.fighter.hp, player.fighter.max_hp))
 
     # Blits the main off-screen console onto the root console.
     libtcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)

@@ -1,6 +1,7 @@
 import libtcodpy as libtcod
 from random import randint  # Used for generating random room sizes and positions.
 
+from render_functions import RenderOrder
 from components.fighter import Fighter
 from components.ai import BasicMonster
 from entity import Entity
@@ -149,18 +150,20 @@ class GameMap:
             # It does this by making a list comprehension of entities if the entity overlaps.
             # If this new list is empty it will place the monster.
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                # 80% chance this monster will be an Orc.
-                # 20% chance this monster will be a Troll.
+                # 80% chance this monster will be an ORC.
+                # 20% chance this monster will be a TROLL.
+                # SPAWNS ORC
                 if randint(0, 100) < 80:
                     fighter_component = Fighter(hp=10, defense=0, power=3)
                     ai_component = BasicMonster()
                     monster = Entity(x, y, "o", libtcod.desaturated_green, "Orc", blocks=True,
-                                     fighter=fighter_component, ai=ai_component)
+                                     render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
+                # SPAWNS TROLL.
                 else:
                     fighter_component = Fighter(hp=16, defense=1, power=4)
                     ai_component = BasicMonster()
                     monster = Entity(x, y, "T", libtcod.darker_green, "Troll", blocks=True,
-                                     fighter=fighter_component, ai=ai_component)
+                                     render_order=RenderOrder.ACTOR, fighter=fighter_component, ai=ai_component)
 
                 # Appends the monster to the entities list.
                 entities.append(monster)
