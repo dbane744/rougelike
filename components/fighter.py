@@ -1,3 +1,6 @@
+import libtcodpy as libtcod
+
+from game_messages import Message
 
 
 class Fighter:
@@ -29,13 +32,13 @@ class Fighter:
 
         if damage > 0:
 
-            results.append({"message": "{0} attacks {1} for {2} hit points.".format(self.owner.name.capitalize(),
-                  target.name, str(damage))})
+            results.append({"message": Message(("{0} attacks {1} for {2} hit points.").format(self.owner.name.capitalize(),
+                  target.name, str(damage)))})
 
             results.extend(target.fighter.take_damage(damage))
         else:
-            results.append({"message": "{0} attacks {1} but does not damage.".format(self.owner.name.capitalize(),
-                                                               target.name)})
+            results.append({"message": Message(("{0} attacks {1} but does not damage.").format(self.owner.name.capitalize(),
+                                                               target.name))})
 
         return results
 

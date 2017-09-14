@@ -1,5 +1,6 @@
 import libtcodpy as libtcod
 
+from game_messages import MessageLog
 from death_functions import kill_monster, kill_player
 from components.fighter import Fighter
 from fov_functions import initialise_fov, recompute_fov
@@ -20,6 +21,11 @@ def main():
     bar_width = 20
     panel_height = 7
     panel_y = screen_height - panel_height
+
+    # Message log variables.
+    message_x = bar_width + 2
+    message_width = screen_width - bar_width - 2
+    message_height = panel_height - 1
 
     # Map size.
     map_width = 80
@@ -72,6 +78,8 @@ def main():
     # Computes the fov_map
     fov_map = initialise_fov(game_map)
 
+    message_log = MessageLog(message_x, message_width, message_height)
+
     # Stores the keyboard and mouse input. This will be updated throughout the game loop.
     key = libtcod.Key()
     mouse = libtcod.Mouse()
@@ -84,15 +92,15 @@ def main():
 ############################################################
     while not libtcod.console_is_window_closed():
         # Captures input - will update key and mouse variables with the input.
-        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
+        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE_PRESS, key, mouse)
 
         # Recomputes the FOV if necessary.
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)
 
         # Draws all entities to the off-screen console and blits the console to the root.
-        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, screen_width, screen_height,
-                   bar_width, panel_height, panel_y, colors)
+        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height,
+                   bar_width, panel_height, panel_y, mouse, colors)
 
         # Don't recompute the fov/repaint the tiles until after the player moves.
         fov_recompute = False
@@ -155,7 +163,7 @@ def main():
             dead_entity = player_turn_result.get("dead")
 
             if message:
-                print(message)
+                message_log.add_message(message)
 
             if dead_entity:
                 # If the dead entity is the player.
@@ -168,7 +176,7 @@ def main():
                     message = kill_monster(dead_entity)
 
                 # Prints one of the messages.
-                print(message)
+                message_log.add_message(message)
 
 
         ########## ENEMY's TURN ##########
@@ -182,7 +190,7 @@ def main():
                         dead_entity = enemy_turn_result.get("dead")
 
                         if message:
-                            print(message)
+                            message_log.add_message(message)
 
                         if dead_entity:
                             # If the dead entity is the player.
@@ -194,12 +202,15 @@ def main():
                                 message = kill_monster(dead_entity)
 
                             # Prints one of the death messages.
-                            print(message)
+                            message_log.add_message(message)
 
                             # Prevents the else/player's turn from occurring again by breaking the for loop.
                             if game_state == GameStates.PLAYER_DEAD:
                                 break
 
+                    # Prevents the else/player's turn from occurring again by breaking the for loop.
+                    if game_state == GameStates.PLAYER_DEAD:
+                        break
             # If break wasn't called do this:
             else:
                 # Sets the game state to the player's turn.
