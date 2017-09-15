@@ -1,7 +1,26 @@
 import libtcodpy as libtcod
 
+from game_states import GameStates
 
-def handle_keys(key):
+
+def handle_keys(key, game_state):
+    """
+    Deternmines which handle keys method should be used(and result returned) depending on current game state.
+    :param key: 
+    :param gamestate: 
+    :return: 
+    """
+    if game_state == GameStates.PLAYERS_TURN:
+        return handle_player_turn_keys(key)
+    elif game_state == GameStates.PLAYER_DEAD:
+        return handle_player_dead_keys(key)
+    elif game_state == GameStates.SHOW_INVENTORY:
+        return handle_inventory_keys(key)
+
+    # If none of the above game states:
+    return {}
+
+def handle_player_turn_keys(key):
     # Grabs the character of the keypress if there is one.
     key_char = chr(key.c)
 
@@ -22,6 +41,11 @@ def handle_keys(key):
         return {"move": (-1, 1)}
     elif key.vk == libtcod.KEY_KP3:
         return {"move": (1, 1)}
+    # Character keys.
+    if key_char == "g":
+        return {"pickup": True}
+    elif key_char == "i":
+        return {"show_inventory": True}
 
     if key.vk == libtcod.KEY_ENTER and key.lalt:
         # Alt+Enter: Toggle full screen
@@ -32,4 +56,41 @@ def handle_keys(key):
         return {"exit": True}
 
     # No key was pressed
+    return {}
+
+def handle_player_dead_keys(key):
+    key_chr = chr(key.c)
+
+    if key_chr == "i":
+        return {"show inventory": True}
+
+    if key.vk == libtcod.KEY_ENTER and key.lalt:
+        # Toggle full screen.
+        return {"fullscreen": True}
+    elif key.vk == libtcod.KEY_ESCAPE:
+        # Exit the menu.
+        return {"exit": True}
+
+    return {}
+
+def handle_inventory_keys(key):
+    """
+    When the game state is on the inventory.
+    :param key: 
+    :return: 
+    """
+    # When using ord() - a = 0, b = 1, c = 2 etc.
+    index = key.c - ord("a")
+
+    # Returns the index of the selected item.
+    if index >= 0:
+        return {"inventory_index": index}
+
+    if key.vk == libtcod.KEY_ENTER and key.lalt:
+        # Toggle full screen.
+        return {"fullscreen": True}
+    elif key.vk == libtcod.KEY_ESCAPE:
+        # Exit the menu.
+        return {"exit": True}
+
     return {}

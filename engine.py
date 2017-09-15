@@ -1,6 +1,7 @@
 import libtcodpy as libtcod
 
-from game_messages import MessageLog
+from components.inventory import Inventory
+from game_messages import Message, MessageLog
 from death_functions import kill_monster, kill_player
 from components.fighter import Fighter
 from fov_functions import initialise_fov, recompute_fov
@@ -43,6 +44,7 @@ def main():
 
     # Entity limitations
     max_monsers_per_room = 3
+    max_items_per_room = 2
 
     colors = {
         "dark_wall": libtcod.Color(64, 64, 64),
@@ -52,10 +54,12 @@ def main():
     }
 
 
-    # Creates the player's fighter component.
+    # Creates the player's components.
     fighter_component = Fighter(hp=30, defense=2, power=5)
+    inventory_component = Inventory(26)
     # Creates the player object.
-    player = Entity(0, 0, "@", libtcod.white, "Player", blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component)
+    player = Entity(0, 0, "@", libtcod.white, "Player", blocks=True, render_order=RenderOrder.ACTOR,
+                    fighter=fighter_component, inventory=inventory_component)
     # Creates a list of initial static entities.
     entities = [player]
 
@@ -70,7 +74,7 @@ def main():
     # Creates the game map and calls its make_map function.
     game_map = GameMap(map_width, map_height)
     game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities,
-                      max_monsers_per_room)
+                      max_monsers_per_room, max_items_per_room)
 
     # Whether to recompute the fov (Would be false if the player didn't move that turn).
     # True by default because we have to compute it when the game starts.
@@ -86,6 +90,9 @@ def main():
 
     # Stores the current game state integer value, e.g. PLAYERS_TURN is 1.
     game_state = GameStates.PLAYERS_TURN
+    # Stores the previous game state. Used for changing gamestate and reverting without wasting a turn.
+    # e.g when opening the inventory.
+    previous_game_state = game_state
 
 ############################################################
                         # GAME LOOP
@@ -100,7 +107,7 @@ def main():
 
         # Draws all entities to the off-screen console and blits the console to the root.
         render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height,
-                   bar_width, panel_height, panel_y, mouse, colors)
+                   bar_width, panel_height, panel_y, mouse, colors, game_state)
 
         # Don't recompute the fov/repaint the tiles until after the player moves.
         fov_recompute = False
@@ -111,12 +118,15 @@ def main():
         # Erases all characters on the off-screen console.
         clear_all(con, entities)
 
-        ### REACTS TO KEY PRESSES ###
-        action = handle_keys(key)
+        ##### REACTS TO KEY PRESSES #####
+        action = handle_keys(key, game_state)
 
         # Stores the value/s returned from dictionary key.
         # Performs an action if one of the variables is not empty.
         move = action.get("move")
+        pickup = action.get("pickup")
+        show_inventory = action.get("show_inventory")
+        inventory_index = action.get("inventory_index")
         exit = action.get("exit")
         fullscreen = action.get("fullscreen")
 
@@ -149,18 +159,49 @@ def main():
             # Sets the game state to the enemy's turn.
             game_state = GameStates.ENEMY_TURN
 
-        # EXIT.
+        # If the pickup button was pressed (g).
+        elif pickup and game_state == GameStates.PLAYERS_TURN:
+            for entity in entities:
+                # If the overlapping entity can be picked up.
+                if entity.item and entity.x == player.x and entity.y == player.y:
+                    # Adds the item to the inventory and results the results.
+                    # Results include a Message and the grabbed Item object.
+                    pickup_results = player.inventory.add_item(entity)
+                    player_turn_results.extend(pickup_results)
+
+                    # Breaks so we can only pickup one item at a time.
+                    break
+            else:
+                message_log.add_message(Message("There is nothing here to pick up", libtcod.yellow))
+
+        # If i was pressed for inventory it changes the gamestate while storing the previous state.
+        if show_inventory:
+            previous_game_state = game_state
+            game_state = GameStates.SHOW_INVENTORY
+
+        # Selects an item in the inventory using the index value of the item.
+        if inventory_index is not None and previous_game_state != GameStates.PLAYER_DEAD and inventory_index < len(
+                player.inventory.items):
+            item = player.inventory.items[inventory_index]
+            print(item)
+
+
+        # Exits the game. UNLESS a menu is open then it just closes the menu.
         if exit:
-            return True
+            if game_state == GameStates.SHOW_INVENTORY:
+                game_state = previous_game_state
+            else:
+                return True
 
         # FULLSCREEN.
         if fullscreen:
             libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
 
-        ### Acts of player's turn results ###
+        ### Acts on player's turn results including adding to message log. ###
         for player_turn_result in player_turn_results:
             message = player_turn_result.get("message")
             dead_entity = player_turn_result.get("dead")
+            item_added = player_turn_result.get("item_added")
 
             if message:
                 message_log.add_message(message)
@@ -177,6 +218,13 @@ def main():
 
                 # Prints one of the messages.
                 message_log.add_message(message)
+
+            # If an item was picked up it removes it form the entity list and sets the game state to enemy turn.
+            # (The entity is no longer on the map so it is removed)
+            if item_added:
+                entities.remove(item_added)
+
+                game_state = GameStates.ENEMY_TURN
 
 
         ########## ENEMY's TURN ##########
