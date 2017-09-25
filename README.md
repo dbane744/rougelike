@@ -2,6 +2,8 @@
 My first attempt at building a rougelike using Python and the libtcodpy library.
 It follows the tutorial by /u/AetherGrey available at http://rogueliketutorials.com/libtcod/1.
 
+The game follows the tradtional rougelike principles of representing all entities through ASCII characters - however, tilesets/graphics will be added eventually.
+
 The game is currently in development; many more features are to be added!
 
 Run engine.py to run the game.
