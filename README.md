@@ -20,5 +20,9 @@ ESC : Exit the game
 
 Alt + Enter : Fullscreen
 
+KNOWN BUGS
+----------------------------------------
+The game loop does not end when the player dies - an infinite loop is reached (so try not to die).
+
 
 
