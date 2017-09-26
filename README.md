@@ -14,6 +14,8 @@ Arrow keys or numpad keys to move (UP=8,LEFT=4,RIGHT=6,DOWN=2,DIAGONAL MOVEMENT=
 
 Attack enemies by 'moving' onto their tile.
 
+Identify an entity by left clicking on their tile with the mouse.
+
 I : Inventory
 
 G : Pickup item on the same tile as player.
