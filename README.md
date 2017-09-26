@@ -16,7 +16,9 @@ Attack enemies by 'moving' onto their tile.
 
 Identify an entity by left clicking on their tile with the mouse.
 
-I : Inventory
+I : Inventory (Press the item's corresponding key to use it)
+
+D : Drop Inventory (Press the item's corresponding key to drop it)
 
 G : Pickup item on the same tile as player.
 
