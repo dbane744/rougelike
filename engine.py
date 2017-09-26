@@ -126,6 +126,7 @@ def main():
         move = action.get("move")
         pickup = action.get("pickup")
         show_inventory = action.get("show_inventory")
+        drop_inventory = action.get("drop_inventory") # An inventory screen where you can only drop items.
         inventory_index = action.get("inventory_index")
         exit = action.get("exit")
         fullscreen = action.get("fullscreen")
@@ -174,21 +175,30 @@ def main():
             else:
                 message_log.add_message(Message("There is nothing here to pick up", libtcod.yellow))
 
-        # If i was pressed for inventory it changes the gamestate while storing the previous state.
+        # If 'i' was pressed for inventory it changes the gamestate while storing the previous state.
         if show_inventory:
             previous_game_state = game_state
             game_state = GameStates.SHOW_INVENTORY
+        # If 'd' was pressed for the drop inventory.
+        if drop_inventory:
+            previous_game_state = game_state
+            game_state = GameStates.DROP_INVENTORY
 
         # Selects an item in the inventory using the index value of the item.
         if inventory_index is not None and previous_game_state != GameStates.PLAYER_DEAD and inventory_index < len(
                 player.inventory.items):
             item = player.inventory.items[inventory_index]
-            print(item)
+            # If the SHOW_INVENTORY state, the item will be used.
+            if game_state == GameStates.SHOW_INVENTORY:
+                player_turn_results.extend(player.inventory.use(item))
+            # If the DROP_INVENTORY state, the item will be dropped.
+            elif game_state == GameStates.DROP_INVENTORY:
+                player_turn_results.extend(player.inventory.drop_item(item))
 
 
         # Exits the game. UNLESS a menu is open then it just closes the menu.
         if exit:
-            if game_state == GameStates.SHOW_INVENTORY:
+            if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
                 game_state = previous_game_state
             else:
                 return True
@@ -202,6 +212,8 @@ def main():
             message = player_turn_result.get("message")
             dead_entity = player_turn_result.get("dead")
             item_added = player_turn_result.get("item_added")
+            item_consumed = player_turn_result.get("consumed")
+            item_dropped = player_turn_result.get("item_dropped")
 
             if message:
                 message_log.add_message(message)
@@ -226,10 +238,20 @@ def main():
 
                 game_state = GameStates.ENEMY_TURN
 
+            # Consuming an item triggers the enemy turn.
+            if item_consumed:
+                game_state = GameStates.ENEMY_TURN
+
+            if item_dropped:
+                entities.append(item_dropped)
+
+                game_state = GameStates.ENEMY_TURN
+
 
         ########## ENEMY's TURN ##########
         if game_state == GameStates.ENEMY_TURN:
             for entity in entities:
+                # If the entity has the ai component.
                 if entity.ai:
                     enemy_turn_results = entity.ai.take_turn(player, fov_map, game_map, entities)
 
@@ -266,6 +288,6 @@ def main():
 ############################################################
 
 
-# Runs the main method if engine.py is ran.
+# Runs the main method if engine.py is executed.
 if __name__ == "__main__":
     main()

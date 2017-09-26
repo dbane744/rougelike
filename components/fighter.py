@@ -25,6 +25,17 @@ class Fighter:
 
         return results
 
+    def heal(self, amount):
+        """
+        Heals the entity by a certain amount.
+        Is meant to work in conjunction with the heal function in item_functions.
+        :param amount: The number of hp points to heal.
+        """
+        self.hp += amount
+
+        if self.hp > self.max_hp:
+            self.hp = self.max_hp
+
     def attack(self, target):
         results =[]
 
@@ -41,4 +52,3 @@ class Fighter:
                                                                target.name))})
 
         return results
-

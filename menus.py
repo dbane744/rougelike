@@ -5,12 +5,14 @@ def menu(con, header, options, width, screen_width, screen_height):
     """
     Creates a new console to hold any menus that may be used e.g the inventory.
     It then blits this menu to the root console.
-    :param con: 
-    :param header: 
-    :param options: 
-    :param width: 
-    :param screen_width: 
-    :param screen_height: 
+    :param con: The root console.
+    :param header: A string that will be printed to the header.
+    :type  header: String
+    :param options: A list of strings that should be printed to the menu.
+    :param width: Width of the menu.
+    :type  width: Int
+    :param screen_width: Width of the whole screen.
+    :param screen_height: Height of the whole screen.
     :return: 
     """
     if len(options) > 26: raise ValueError("Cannot have a menu with more than 26 options.")
@@ -44,7 +46,7 @@ def menu(con, header, options, width, screen_width, screen_height):
 def inventory_menu(con, header, inventory, inventory_width, screen_width, screen_height):
     """
     Utilises menu() to create an inventory menu.
-    :param con: 
+    :param con: The root console to blit to.
     :param header: 
     :param inventory_width: 
     :param screen_width: 

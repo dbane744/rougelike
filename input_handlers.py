@@ -14,7 +14,8 @@ def handle_keys(key, game_state):
         return handle_player_turn_keys(key)
     elif game_state == GameStates.PLAYER_DEAD:
         return handle_player_dead_keys(key)
-    elif game_state == GameStates.SHOW_INVENTORY:
+    # Kills 2 birds with one stone - all inventory game states.
+    elif game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
         return handle_inventory_keys(key)
 
     # If none of the above game states:
@@ -46,6 +47,8 @@ def handle_player_turn_keys(key):
         return {"pickup": True}
     elif key_char == "i":
         return {"show_inventory": True}
+    elif key_char == "d":
+        return {"drop_inventory": True}
 
     if key.vk == libtcod.KEY_ENTER and key.lalt:
         # Alt+Enter: Toggle full screen
@@ -76,10 +79,11 @@ def handle_player_dead_keys(key):
 def handle_inventory_keys(key):
     """
     When the game state is on the inventory.
-    :param key: 
-    :return: 
+    :param The keyboard key that was pressed.
+    :return: Results of the key press.
     """
     # When using ord() - a = 0, b = 1, c = 2 etc.
+    # Generates a unique index for each item that corresponds to the inventory item list.
     index = key.c - ord("a")
 
     # Returns the index of the selected item.

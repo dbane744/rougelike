@@ -6,6 +6,9 @@ from game_states import GameStates
 from menus import inventory_menu
 
 class RenderOrder(Enum):
+    """
+    Enumerates the render order for each entity for ease of use.
+    """
     CORPSE = 1
     ITEM = 2
     ACTOR = 3
@@ -123,7 +126,7 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
     render_bar(panel, 1, 1, bar_width, "HP", player.fighter.hp, player.fighter.max_hp,
                libtcod.light_red, libtcod.darker_red)
 
-    ########## RENDERS entities-under-mouse ##########
+    ########## RENDERS entities-under-mouse message ##########
 
     libtcod.console_set_default_foreground(panel, libtcod.light_gray)
     libtcod.console_print_ex(panel, 1, 0, libtcod.BKGND_NONE, libtcod.LEFT,
@@ -136,8 +139,14 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
 
     ########## BLITS THE INVENTORY MENU IF APPLICABLE ##########
 
-    if game_state == GameStates.SHOW_INVENTORY:
-        inventory_menu(con, "Press the key next to an item to use it, or Esc to cancel.\n",
+    if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+        if game_state == GameStates.SHOW_INVENTORY:
+            inventory_title = "Press the key next to an item to use it, or Esc to cancel.\n"
+        else: # Else the inventory must be the drop inventory...
+            inventory_title = "Press the key next to an item to drop it, or Esc to cancel.\n"
+
+        # Creates the inventory menu and blits it to the screen.
+        inventory_menu(con, inventory_title,
                        player.inventory, 50, screen_width, screen_height)
 
 

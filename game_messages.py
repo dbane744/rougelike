@@ -4,12 +4,18 @@ import textwrap
 
 
 class Message:
+    """
+    Encapsulates a message that is meant to be shown in the MessageLog.
+    """
     def __init__(self, text, color=libtcod.white):
         self.text = text
         self.color = color
 
 
 class MessageLog:
+    """
+    Will hold the log of messages from all actions.
+    """
     def __init__(self, x, width, height):
         self.messages = []
         self.x = x

@@ -33,7 +33,7 @@ class Entity:
             self.item.owner = self
 
         if self.inventory:
-            self=inventory.owner = self
+            self.inventory.owner = self
 
     def move(self, dx, dy):
         # Moves the entity by the given amount.
@@ -57,6 +57,9 @@ class Entity:
             self.move(dx, dy)
 
     def move_astar(self, target, entities, game_map):
+        """
+        Uses the A* algorithm for ai path finding.
+        """
         # Create a FOV map that has the dimensions of the map
         fov = libtcod.map_new(game_map.width, game_map.height)
 
@@ -74,7 +77,7 @@ class Entity:
                 # Set the tile as a wall so it must be navigated around
                 libtcod.map_set_properties(fov, entity.x, entity.y, True, False)
 
-        # Allocate a A* path
+        # Allocate an A* path
         # The 1.41 is the normal diagonal cost of moving, it can be set as 0.0 if diagonal moves are prohibited
         my_path = libtcod.path_new_using_map(fov, 1.41)
 

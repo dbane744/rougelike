@@ -6,6 +6,7 @@ from render_functions import RenderOrder
 from components.fighter import Fighter
 from components.ai import BasicMonster
 from entity import Entity
+from item_functions import heal
 from map_objects.tile import Tile
 from map_objects.rectangle import Rect
 
@@ -133,6 +134,14 @@ class GameMap:
             self.tiles[x][y].block_sight = False
 
     def place_entities(self, room, entities, max_monsters_per_room, max_items_per_room):
+        """
+        Places a random number of entities in a given room.
+        :param room: Which room to place the enities in.
+        :param entities: The current entities list.
+        :param max_monsters_per_room:
+        :param max_items_per_room:
+        :return:
+        """
 
         # Get a random number of monsters
         number_of_monsters = randint(0, max_monsters_per_room)
@@ -181,7 +190,7 @@ class GameMap:
             # Places a healing potion if the tile is empty of entities.
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
                 # Giving the potion an item component allows it to be picked up.
-                item_component = Item()
+                item_component = Item(use_function=heal, amount=4)
                 item = Entity (x, y, "!", libtcod.violet, "Healing Potion", render_order=RenderOrder.ITEM,
                                item=item_component)
 
