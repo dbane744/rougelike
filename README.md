@@ -16,6 +16,8 @@ Attack enemies by 'moving' onto their tile.
 
 Identify an entity by left clicking on their tile with the mouse.
 
+Target enemies with spells by left clicking their tile.
+
 I : Inventory (Press the item's corresponding key to use it)
 
 D : Drop Inventory (Press the item's corresponding key to drop it)
