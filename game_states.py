@@ -9,3 +9,4 @@ class GameStates(Enum):
     PLAYER_DEAD = auto()
     SHOW_INVENTORY = auto()
     DROP_INVENTORY = auto()
+    TARGETING = auto() # A state where the player must select a tile to continue (i.e. when casting spells)

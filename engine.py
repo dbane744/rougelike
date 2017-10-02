@@ -8,7 +8,7 @@ from fov_functions import initialise_fov, recompute_fov
 from game_states import GameStates
 from map_objects.game_map import GameMap
 from entity import Entity, get_blocking_entities_at_location
-from input_handlers import handle_keys
+from input_handlers import handle_keys, handle_mouse
 from render_functions import render_all, clear_all, RenderOrder
 
 
@@ -43,8 +43,8 @@ def main():
     fov_radius = 10 # Tells us how far the player can see.
 
     # Entity limitations
-    max_monsers_per_room = 3
-    max_items_per_room = 2
+    max_monsters_per_room = 3
+    max_items_per_room = 500
 
     colors = {
         "dark_wall": libtcod.Color(64, 64, 64),
@@ -74,7 +74,7 @@ def main():
     # Creates the game map and calls its make_map function.
     game_map = GameMap(map_width, map_height)
     game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities,
-                      max_monsers_per_room, max_items_per_room)
+                      max_monsters_per_room, max_items_per_room)
 
     # Whether to recompute the fov (Would be false if the player didn't move that turn).
     # True by default because we have to compute it when the game starts.
@@ -94,12 +94,15 @@ def main():
     # e.g when opening the inventory.
     previous_game_state = game_state
 
+    # Stores which item requires targeting.
+    targeting_item = None
+
 ############################################################
                         # GAME LOOP
 ############################################################
     while not libtcod.console_is_window_closed():
         # Captures input - will update key and mouse variables with the input.
-        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE_PRESS, key, mouse)
+        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
 
         # Recomputes the FOV if necessary.
         if fov_recompute:
@@ -118,11 +121,14 @@ def main():
         # Erases all characters on the off-screen console.
         clear_all(con, entities)
 
-        ##### REACTS TO KEY PRESSES #####
+        ##### REACTS TO A KEY PRESS OR A MOUSE CLICK #####
         action = handle_keys(key, game_state)
+        mouse_action = handle_mouse(mouse)
 
         # Stores the value/s returned from dictionary key.
         # Performs an action if one of the variables is not empty.
+
+        # Key presses:
         move = action.get("move")
         pickup = action.get("pickup")
         show_inventory = action.get("show_inventory")
@@ -130,6 +136,10 @@ def main():
         inventory_index = action.get("inventory_index")
         exit = action.get("exit")
         fullscreen = action.get("fullscreen")
+
+        # Mouse clicks:
+        left_click = mouse_action.get("left_click")
+        right_click = mouse_action.get("right_click")
 
         ########## PLAYER'S TURN ##########
 
@@ -190,11 +200,23 @@ def main():
             item = player.inventory.items[inventory_index]
             # If the SHOW_INVENTORY state, the item will be used.
             if game_state == GameStates.SHOW_INVENTORY:
-                player_turn_results.extend(player.inventory.use(item))
+                player_turn_results.extend(player.inventory.use(item, entities=entities, fov_map=fov_map))
             # If the DROP_INVENTORY state, the item will be dropped.
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop_item(item))
 
+        # If the game state has bene set to tarrgeting mode it will check if any left or right clicks have been made
+        # Left clicks use the item stored in 'targeting_item' and will extend the results to player_turn_results.
+        # Right click appends 'targeting_cancelled'. to the player results.
+        if game_state == GameStates.TARGETING:
+            if left_click:
+                target_x, target_y = left_click
+
+                item_use_results = player.inventory.use(targeting_item, entities=entities, fov_map=fov_map,
+                                                        target_x=target_x, target_y=target_y)
+                player_turn_results.extend(item_use_results)
+            elif right_click:
+                player_turn_results.append({"targeting_cancelled": True})
 
         # Exits the game. UNLESS a menu is open then it just closes the menu.
         if exit:
@@ -203,7 +225,7 @@ def main():
             else:
                 return True
 
-        # FULLSCREEN.
+        # Fullscreen.
         if fullscreen:
             libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
 
@@ -214,6 +236,8 @@ def main():
             item_added = player_turn_result.get("item_added")
             item_consumed = player_turn_result.get("consumed")
             item_dropped = player_turn_result.get("item_dropped")
+            targeting = player_turn_result.get("targeting")
+            targeting_cancelled = player_turn_result.get("targeting_cancelled")
 
             if message:
                 message_log.add_message(message)
@@ -242,9 +266,22 @@ def main():
             if item_consumed:
                 game_state = GameStates.ENEMY_TURN
 
+            # Switches the game state to TARGETING, stores the targeting item and adds the targeting message to the log.
+            if targeting:
+                # Changes the previous game state to PLAYERS_TURN rather than INVENTORY so that cancelling the targeting
+                # mode (with ESC) returns the playher back to the main console rather than the inventory screen.
+                previous_game_state = GameStates.PLAYERS_TURN
+                game_state = GameStates.TARGETING
+                targeting_item = targeting
+                message_log.add_message(targeting_item.item.targeting_message)
+
+            # If the user cancelled targeting the previous state will be reverted.
+            if targeting_cancelled:
+                game_state = previous_game_state
+                message_log.add_message(Message("Targeting cancelled"))
+
             if item_dropped:
                 entities.append(item_dropped)
-
                 game_state = GameStates.ENEMY_TURN
 
 

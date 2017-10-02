@@ -6,7 +6,8 @@ from render_functions import RenderOrder
 from components.fighter import Fighter
 from components.ai import BasicMonster
 from entity import Entity
-from item_functions import heal
+from game_messages import Message
+from item_functions import cast_confuse, cast_fireball, cast_lightning, heal
 from map_objects.tile import Tile
 from map_objects.rectangle import Rect
 
@@ -187,14 +188,41 @@ class GameMap:
             x = randint(room.x1 + 1, room.x2 - 1)
             y = randint(room.y1 + 1, room.y2 - 1)
 
-            # Places a healing potion if the tile is empty of entities.
+            # Places an item if the tile is empty of entities.
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                # Giving the potion an item component allows it to be picked up.
-                item_component = Item(use_function=heal, amount=4)
-                item = Entity (x, y, "!", libtcod.violet, "Healing Potion", render_order=RenderOrder.ITEM,
-                               item=item_component)
+                # Random int that dictates which item should be spawned.
+                item_chance = randint(0, 100)
+
+                # SPAWNS HEALING POTION - 70% CHANCE.
+                if item_chance < 70:
+                    # Giving the potion an item component allows it to be picked up.
+                    item_component = Item(use_function=heal, amount=4)
+                    item = Entity (x, y, "!", libtcod.violet, "Healing Potion", render_order=RenderOrder.ITEM,
+                                   item=item_component)
+                # SPAWNS FIREBALL SCROLL - 10% CHANCE.
+                elif item_chance < 80:
+                    item_component = Item(use_function=cast_fireball, targeting=True, targeting_message=Message(
+                        "Left-click a target tile for the fireball, or right-click to cancel.", libtcod.light_cyan),
+                                          damage=12, radius=3)
+                    item = Entity(x, y, "#", libtcod.red, "Fireball Scroll", render_order=RenderOrder.ITEM,
+                                  item=item_component)
+                # SPAWNS LIGHTNING SCROLL - 10% CHANCE.
+                elif item_chance < 90:
+                    item_component = Item(use_function=cast_lightning, damage=20, maximum_range=5)
+                    item = Entity(x, y, "#", libtcod.yellow, "Lightning Scroll", render_order=RenderOrder.ITEM,
+                                  item=item_component)
+                elif item_chance <= 100:
+                    item_component = Item(use_function=cast_confuse, targeting=True, targeting_message=Message(
+                        "Left-click an enemy to confuse it, or right-click to cancel.", libtcod.light_cyan))
+                    item = Entity(x, y, "#", libtcod.light_pink, "Confusion Scroll", render_order=RenderOrder.ITEM,
+                                  item=item_component)
 
                 entities.append(item)
+
+
+
+
+
 
 
 
@@ -202,9 +230,9 @@ class GameMap:
     def is_blocked(self, x, y):
         """
         Checks if the given tile is blocked by a blocking tile.
-        :param x: 
-        :param y: 
-        :return: 
+        :param x: X position of the tile in question.
+        :param y: Y position of the tile in question.
+        :return: True or False depending on whether the tile is blocked.
         """
         if self.tiles[x][y].blocked:
             return True

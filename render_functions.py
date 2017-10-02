@@ -14,6 +14,13 @@ class RenderOrder(Enum):
     ACTOR = 3
 
 def get_names_under_mouse(mouse, entities, fov_map):
+    """
+    Finds the entity names of those on a clicked tile and returns the names as a string.
+    :param mouse: The libtcod mouse object.
+    :param entities: The entities list.
+    :param fov_map: The fov map.
+    :return: A string that specifies which entities are on the clicked tile.
+    """
     # Stores mouse position.
     (x, y) = (mouse.cx, mouse.cy)
 

@@ -1,0 +1,4 @@
+PLANNED FEATURES
+-----------------------------------
+
+- The confusion scroll will not only cause random monster movement but will cause monsters to randomly attack other entities(including themselves!)

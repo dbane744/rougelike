@@ -41,6 +41,14 @@ class Entity:
         self.y += dy
 
     def move_towards(self, target_x, target_y, game_map, entities):
+        """
+        Attempts to move the entity into the target x and y tile on the game_map.
+        Only moves if the target tile is unblocked.
+        :param target_x: The target tile's x position.
+        :param target_y: The target tile's y position.
+        :param game_map: The game map that stores the map tiles.
+        :param entities: The list of all entities.
+        """
         dx = target_x - self.x # Horizontal distance between entity and target.
         dy = target_y - self.y # Vertical distance between entity and target.
         # Uses Pythagorean theorem to work out the distance between the entity and target.
@@ -101,6 +109,16 @@ class Entity:
 
             # Delete the path to free memory
         libtcod.path_delete(my_path)
+
+    def distance(self, x, y):
+        """
+        Finds the distance between the entity and a given tile.
+        :param x: The x coordinate of the tile.
+        :type  x: Int
+        :param y:The y coordinate of the tile.
+        :type  y: Int
+        """
+        return math.sqrt((x - self.x) ** 2 +(y - self.y) ** 2)
 
     def distance_to(self, other):
         """

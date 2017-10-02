@@ -47,19 +47,24 @@ class Inventory:
         # If the item does not have a use_function(a stored function in its attributes).
         if item_component.use_function is None:
             results.append({"message": Message("The {0} cannot be used".format(item_entity.name), libtcod.yellow)})
-        else:
-            # Grabs the kwargs from the item class e.g the hp potion sets this to a heal amount.
-            kwargs = {**item_component.function_kwargs, **kwargs}
-            # grabs the use function from the item class - this is a function stored is an attribute.
-            item_use_results = item_component.use_function(self.owner, **kwargs)
+        else: # If the item requires targeting (and there is no predefined x or y target coordinates)
+            if item_component.targeting and not (kwargs.get("target_x") or kwargs.get("target_y")):
+                results.append({"targeting": item_entity})
+            else: # Use the item.
+                # Grabs the kwargs from the item class e.g the hp potion sets this to a heal amount.
+                # Also grabs any extra kwargs used as the second argument to use().
+                # Stores the kwargs in a set (An unordered group of values).
+                kwargs = {**item_component.function_kwargs, **kwargs}
+                # grabs the use function from the item class - this is a function stored is an attribute.
+                item_use_results = item_component.use_function(self.owner, **kwargs)
 
-            # If the items use function returns 'consumed' on use it will call remove_item().
-            for item_use_result in item_use_results:
-                if item_use_result.get("consumed"):
-                    self.remove_item(item_entity)
+                # If the items use function returns 'consumed' on use it will call remove_item().
+                for item_use_result in item_use_results:
+                    if item_use_result.get("consumed"):
+                        self.remove_item(item_entity)
 
-            # Extends the results then returns them.
-            results.extend(item_use_results)
+                # Extends the results then returns them.
+                results.extend(item_use_results)
 
         return results
 
