@@ -242,7 +242,12 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
         if exit:
             if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
                 game_state = previous_game_state
+            # If the user is targeting ESC only exist the targeting game state.
+            elif game_state == GameStates.TARGETING:
+                player_turn_results.append({'targeting_cancelled': True})
+            # Saves the game and exits the game.
             else:
+                save_game(player, entities, game_map, message_log, game_state)
                 return True
 
         # Fullscreen.
