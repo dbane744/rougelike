@@ -130,3 +130,19 @@ def handle_inventory_keys(key):
         return {"exit": True}
 
     return {}
+
+def handle_main_menu(key):
+    """
+    Handles user input on the main menu.
+    :return: One key value pair.
+    """
+    key_char = chr(key.c)
+
+    if key_char == "a":
+        return {"new_game": True}
+    if key_char == "b":
+        return {"load_game": True}
+    if key_char == "c" or key.vk == libtcod.KEY_ESCAPE:
+        return {"exit": True}
+
+    return {}

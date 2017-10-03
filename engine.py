@@ -1,95 +1,112 @@
 import libtcodpy as libtcod
 
-from components.inventory import Inventory
-from game_messages import Message, MessageLog
+from game_messages import Message
 from death_functions import kill_monster, kill_player
-from components.fighter import Fighter
 from fov_functions import initialise_fov, recompute_fov
 from game_states import GameStates
-from map_objects.game_map import GameMap
 from entity import Entity, get_blocking_entities_at_location
-from input_handlers import handle_keys, handle_mouse
-from render_functions import render_all, clear_all, RenderOrder
+from input_handlers import handle_keys, handle_mouse, handle_main_menu
+from loader_functions.initialise_new_game import get_constants, get_game_variables
+from loader_functions.data_loaders import load_game, save_game
+from menus import main_menu, message_box
+from render_functions import render_all, clear_all
 
 
 def main():
-    # Screen size.
-    screen_width = 80
-    screen_height = 50
-
-    # Panel parameters - holds HP bar, message log.
-    # HP Bar width
-    bar_width = 20
-    panel_height = 7
-    panel_y = screen_height - panel_height
-
-    # Message log variables.
-    message_x = bar_width + 2
-    message_width = screen_width - bar_width - 2
-    message_height = panel_height - 1
-
-    # Map size.
-    map_width = 80
-    map_height = 43
-
-    # Room size/number limitations.
-    room_max_size = 10
-    room_min_size = 6
-    max_rooms = 30
-
-    # FOV (Field of view) limitations.
-    fov_algorithm = 0 # Uses the default algorithm libtcod uses.
-    fov_light_walls = True # Whether to 'light up' the walls we see.
-    fov_radius = 10 # Tells us how far the player can see.
-
-    # Entity limitations
-    max_monsters_per_room = 3
-    max_items_per_room = 500
-
-    colors = {
-        "dark_wall": libtcod.Color(64, 64, 64),
-        "dark_ground": libtcod.Color(68, 36, 52),
-        "light_wall": libtcod.Color(133, 149, 161),
-        "light_ground": libtcod.Color(133, 76, 48)
-    }
-
-
-    # Creates the player's components.
-    fighter_component = Fighter(hp=30, defense=2, power=5)
-    inventory_component = Inventory(26)
-    # Creates the player object.
-    player = Entity(0, 0, "@", libtcod.white, "Player", blocks=True, render_order=RenderOrder.ACTOR,
-                    fighter=fighter_component, inventory=inventory_component)
-    # Creates a list of initial static entities.
-    entities = [player]
-
+    # Initialises, returns and stores a dictionary of all constant values.
+    constants = get_constants()
     # Sets the font.
     libtcod.console_set_custom_font("arial10x10.png", libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
     # Sets up the root console.
-    libtcod.console_init_root(screen_width, screen_height, "My First Rougelike", False)
+    libtcod.console_init_root(constants["screen_width"], constants["screen_height"], constants["window_title"], False)
     # Creates the main off-screen console.
-    con = libtcod.console_new(screen_width, screen_height)
+    con = libtcod.console_new(constants["screen_width"], constants["screen_height"])
     # Creates the hp bar/log panel.
-    panel = libtcod.console_new(screen_width, panel_height)
-    # Creates the game map and calls its make_map function.
-    game_map = GameMap(map_width, map_height)
-    game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities,
-                      max_monsters_per_room, max_items_per_room)
+    panel = libtcod.console_new(constants["screen_width"], constants["panel_height"])
 
+    # Will store the game variables.
+    player = None
+    entities = []
+    game_map = None
+    message_log = None
+    game_state = None
+
+    show_main_menu = True
+    show_load_error_message = False
+
+    # Grabs an image from the project directory - it will be used for the main menu background.
+    main_menu_background_image = libtcod.image_load("menu_background.png")
+
+    key = libtcod.Key()
+    mouse = libtcod.Mouse()
+
+    while not libtcod.console_is_window_closed():
+        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
+
+        # Creates the main menu and blits it to the console.
+        if show_main_menu:
+            main_menu(con, main_menu_background_image, constants["screen_width"], constants["screen_height"])
+
+            if show_load_error_message:
+                message_box(con, "No save game found", 50, constants["screen_width"], constants["screen_height"])
+
+            libtcod.console_flush()
+
+            # Handles key presses.
+            action = handle_main_menu(key)
+
+            new_game = action.get("new_game")
+            load_saved_game = action.get("load_game")
+            exit_game = action.get("exit")
+
+            # If the error message is open pressing one of the menu options will close the window.
+            if show_load_error_message and (new_game or load_saved_game or exit_game):
+                show_load_error_message = False
+            # If new game is selected get_game_variables() will be called for a the default setup.
+            # And the default PLAYERS_TURN gamestate will be set.
+            elif new_game:
+                player, entities, game_map, message_log, game_state = get_game_variables(constants)
+                game_state = GameStates.PLAYERS_TURN
+
+                show_main_menu = False
+            # Loads the game using load_game().
+            elif load_saved_game:
+                # Catching the possible FileNotFoundError in load_game().
+                try:
+                    player, entities, game_map, message_log, game_state = load_game()
+                    show_main_menu = False
+                except FileNotFoundError:
+                    # Shows a message_box if the file cannot be loaded.
+                    show_load_error_message = True
+            # Exits the game by breaking the while loop.
+            elif exit_game:
+                break
+
+        # If show_main_menu is False the player_game function will be called using the newly obtained game variables.
+        else:
+            libtcod.console_clear(con)
+            play_game(player, entities, game_map, message_log, game_state, con, panel, constants)
+
+            # This is set back to True when the play_game() is finished (the user presses ESC or exits).
+            # Brings the user back to the main menu.
+            show_main_menu = True
+
+    # Sets up the game variables using the constants and returns each to a stored variable.
+    # E.g. sets up the player entity.
+    player, entities, game_map, message_log, game_state = get_game_variables(constants)
+
+
+def play_game(player, entities, game_map, message_log, game_state, con, panel, constants):
     # Whether to recompute the fov (Would be false if the player didn't move that turn).
     # True by default because we have to compute it when the game starts.
     fov_recompute = True
     # Computes the fov_map
     fov_map = initialise_fov(game_map)
 
-    message_log = MessageLog(message_x, message_width, message_height)
-
     # Stores the keyboard and mouse input. This will be updated throughout the game loop.
     key = libtcod.Key()
     mouse = libtcod.Mouse()
 
-    # Stores the current game state integer value, e.g. PLAYERS_TURN is 1.
-    game_state = GameStates.PLAYERS_TURN
     # Stores the previous game state. Used for changing gamestate and reverting without wasting a turn.
     # e.g when opening the inventory.
     previous_game_state = game_state
@@ -97,20 +114,23 @@ def main():
     # Stores which item requires targeting.
     targeting_item = None
 
-############################################################
-                        # GAME LOOP
-############################################################
+    ############################################################
+    # GAME LOOP
+    ############################################################
     while not libtcod.console_is_window_closed():
         # Captures input - will update key and mouse variables with the input.
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
 
         # Recomputes the FOV if necessary.
         if fov_recompute:
-            recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)
+            recompute_fov(fov_map, player.x, player.y, constants["fov_radius"], constants["fov_light_walls"],
+                          constants["fov_algorithm"])
 
         # Draws all entities to the off-screen console and blits the console to the root.
-        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width, screen_height,
-                   bar_width, panel_height, panel_y, mouse, colors, game_state)
+        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log,
+                   constants["screen_width"],
+                   constants["screen_height"], constants["bar_width"], constants["panel_height"], constants["panel_y"],
+                   mouse, constants["colors"], game_state)
 
         # Don't recompute the fov/repaint the tiles until after the player moves.
         fov_recompute = False
@@ -132,7 +152,7 @@ def main():
         move = action.get("move")
         pickup = action.get("pickup")
         show_inventory = action.get("show_inventory")
-        drop_inventory = action.get("drop_inventory") # An inventory screen where you can only drop items.
+        drop_inventory = action.get("drop_inventory")  # An inventory screen where you can only drop items.
         inventory_index = action.get("inventory_index")
         exit = action.get("exit")
         fullscreen = action.get("fullscreen")
@@ -284,7 +304,6 @@ def main():
                 entities.append(item_dropped)
                 game_state = GameStates.ENEMY_TURN
 
-
         ########## ENEMY's TURN ##########
         if game_state == GameStates.ENEMY_TURN:
             for entity in entities:
@@ -322,7 +341,7 @@ def main():
             else:
                 # Sets the game state to the player's turn.
                 game_state = GameStates.PLAYERS_TURN
-############################################################
+                ############################################################
 
 
 # Runs the main method if engine.py is executed.

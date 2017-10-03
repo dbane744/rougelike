@@ -1,5 +1,8 @@
 import libtcodpy as libtcod
 
+"""
+This module encapsulates the different menus within the game.
+"""
 
 def menu(con, header, options, width, screen_width, screen_height):
     """
@@ -62,6 +65,33 @@ def inventory_menu(con, header, inventory, inventory_width, screen_width, screen
     # Creates the menu and blits it to the root console.
     menu(con, header, options, inventory_width, screen_width, screen_height)
 
+
+def main_menu(con, background_image, screen_width, screen_height):
+    """
+    Creates the main menu and uses menu() to blit it to the console.
+    :param con:
+    :param background_image:
+    :param screen_width:
+    :param screen_height:
+    """
+    libtcod.image_blit_2x(background_image, 0, 0, 0)
+
+    libtcod.console_set_default_foreground(0, libtcod.light_yellow)
+    libtcod.console_print_ex(0, int(screen_width / 2), int(screen_height / 2) - 4, libtcod.BKGND_NONE, libtcod.CENTER,
+                             "THE ADVENTURES OF KRULL")
+    libtcod.console_print_ex(0, int(screen_width / 2), int(screen_height - 3), libtcod.BKGND_NONE, libtcod.CENTER,
+                             "By Daniel Bane")
+
+    menu(con, "", ["Start new game", "Continue last game", "Quit"], 24, screen_width, screen_height)
+
+
+def message_box(con, header, width, screen_width, screen_height):
+    """
+    Creates and blits a message box to the given console.
+    (It is basically just an empty menu with a header as a message)
+    """
+    # screen_height-12 so the box is not printed directly in the centre ( so it doesn't overlap the main menu options).
+    menu(con, header, [], width, screen_width, screen_height - 12)
 
 
 
