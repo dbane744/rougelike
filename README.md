@@ -8,6 +8,8 @@ The game is currently in development; many more features are to be added!
 
 Run engine.py to run the game.
 
+The game automatically saves on exit.
+
 CONTROLS
 ----------------------------------------
 Arrow keys or numpad keys to move (UP=8,LEFT=4,RIGHT=6,DOWN=2,DIAGONAL MOVEMENT=7,9,1,3.)
@@ -30,7 +32,7 @@ Alt + Enter : Fullscreen
 
 KNOWN BUGS
 ----------------------------------------
-The game loop does not end when the player dies - an infinite loop is reached (so try not to die).
+
 
 
 
