@@ -2,6 +2,7 @@ import libtcodpy as libtcod
 from random import randint  # Used for generating random room sizes and positions.
 
 from components.item import Item
+from components.stairs import Stairs
 from render_functions import RenderOrder
 from components.fighter import Fighter
 from components.ai import BasicMonster
@@ -17,10 +18,13 @@ class GameMap:
     Encapsulates the game map.
     """
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, dungeon_level=1):
         self.width = width
         self.height = height
+        # Creates a list of tiles.
         self.tiles = self.initialise_tiles()
+        # Stores the current dungeon level.
+        self.dungeon_level = dungeon_level
 
     def initialise_tiles(self):
         """
@@ -35,6 +39,7 @@ class GameMap:
                  max_monsters_per_room, max_items_per_room):
         """
         Creates the map. Chisels out all of the rooms and paths. Places all entities.
+        Places a stairway in the middle of the last room.
         :param max_rooms: Integer.
         :param room_min_size: Integer.
         :param room_max_size: Integer.
@@ -51,6 +56,10 @@ class GameMap:
         rooms = []
         # Counts the number of rooms currently created.
         num_rooms = 0
+
+        # Stores the centre of the last room to place the stairs here.
+        centre_of_last_room_x = None
+        centre_of_last_room_y = None
 
         ####### SPAWNS ROOMS #######
         for r in range(max_rooms):
@@ -79,6 +88,10 @@ class GameMap:
 
                 # Stores the centre coordinates of the new room.
                 (new_x, new_y) = new_room.center()
+
+                # Will end up storing the centre of the last room for stair placement.
+                centre_of_last_room_x = new_x
+                centre_of_last_room_y = new_y
 
                 # Puts the player in the centre of the first room.
                 if num_rooms == 0:
@@ -109,6 +122,11 @@ class GameMap:
                 rooms.append(new_room)
                 num_rooms += 1
 
+        # Creates the stairs component - sets its level to the next dungeon level directly below.
+        stairs_component = Stairs(self.dungeon_level + 1)
+        down_stairs = Entity(centre_of_last_room_x, centre_of_last_room_y, ">", libtcod.white, "Stairs",
+                             render_order=RenderOrder.STAIRS, stairs=stairs_component)
+        entities.append(down_stairs)
 
 
     def create_room(self, room):
@@ -220,13 +238,6 @@ class GameMap:
                 entities.append(item)
 
 
-
-
-
-
-
-
-
     def is_blocked(self, x, y):
         """
         Checks if the given tile is blocked by a blocking tile.
@@ -239,4 +250,22 @@ class GameMap:
         else:
             return False
 
+    def next_floor(self, player, message_log, constants):
+        """
+        Generates the next floor of the dungeon and heals half of the players max hp.
+        :return: A new list of entities for the new floor (contains just the player).
+        """
+        self.dungeon_level += 1
+        entities = [player]
 
+        self.tiles = self.initialise_tiles()
+        self.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
+                      constants['map_width'], constants['map_height'], player, entities,
+                      constants['max_monsters_per_room'], constants['max_items_per_room'])
+
+        # Heals half the player's max hp.
+        player.fighter.heal(player.fighter.max_hp // 2)
+
+        message_log.add_message(Message("You take a moment to rest, and recover your strength", libtcod.light_violet))
+
+        return entities

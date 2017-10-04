@@ -154,6 +154,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
         show_inventory = action.get("show_inventory")
         drop_inventory = action.get("drop_inventory")  # An inventory screen where you can only drop items.
         inventory_index = action.get("inventory_index")
+        take_stairs = action.get("take_stairs")
         exit = action.get("exit")
         fullscreen = action.get("fullscreen")
 
@@ -224,6 +225,23 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             # If the DROP_INVENTORY state, the item will be dropped.
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop_item(item))
+
+        # If the player has attempted to move down some stairs.
+        if take_stairs and game_state == GameStates.PLAYERS_TURN:
+            for entity in entities:
+                # If the player IS on the same tile as the stairs.
+                if entity.stairs and entity.x == player.x and entity.y == player.y:
+                    # Creates a new dungeon floor and returns and stores a new set of entities for the new floor.
+                    entities = game_map.next_floor(player, message_log, constants)
+                    # Initialises the fov mapf or the new floor.
+                    fov_map = initialise_fov(game_map)
+                    fov_recompute = True
+                    # Clears the console of the old game map.
+                    libtcod.console_clear(con)
+                    # Prevents other entities from being checked.
+                    break
+                else:
+                    message_log.add_message(Message("There are no stairs here.", libtcod.yellow))
 
         # If the game state has bene set to tarrgeting mode it will check if any left or right clicks have been made
         # Left clicks use the item stored in 'targeting_item' and will extend the results to player_turn_results.

@@ -1,17 +1,21 @@
 import libtcodpy as libtcod
 
-from enum import Enum
+from enum import Enum, auto
 
 from game_states import GameStates
 from menus import inventory_menu
 
+
 class RenderOrder(Enum):
     """
     Enumerates the render order for each entity for ease of use.
+    Entities listed first will be drawn first.
     """
-    CORPSE = 1
-    ITEM = 2
-    ACTOR = 3
+    STAIRS = auto()
+    CORPSE = auto()
+    ITEM = auto()
+    ACTOR = auto()
+
 
 def get_names_under_mouse(mouse, entities, fov_map):
     """
@@ -33,8 +37,6 @@ def get_names_under_mouse(mouse, entities, fov_map):
 
     #Capitalises and returns the names string.
     return names.capitalize()
-
-
 
 
 def render_bar(panel, x, y, total_width, name, value, maximum, bar_color, back_color):
@@ -107,7 +109,7 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
 
     # Draw all entities in the list.
     for entity in entities_in_render_order:
-        draw_entity(con, entity, fov_map)
+        draw_entity(con, entity, fov_map, game_map)
 
     ########## BLITS MAIN CONSOLE ##########
 
@@ -129,9 +131,13 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
 
     ########## RENDERS HP BAR ##########
 
-    # Renders the HP bar.
     render_bar(panel, 1, 1, bar_width, "HP", player.fighter.hp, player.fighter.max_hp,
                libtcod.light_red, libtcod.darker_red)
+
+    ########## DEPTH LEVEL / FLOOR COUNTER ##########
+
+    libtcod.console_print_ex(panel, 1, 3, libtcod.BKGND_NONE, libtcod.LEFT,
+                             "Dungeon level: {0}".format(game_map.dungeon_level))
 
     ########## RENDERS entities-under-mouse message ##########
 
@@ -162,9 +168,9 @@ def clear_all(con, entities):
         clear_entity(con, entity)
 
 
-def draw_entity(con, entity, fov_map):
-    # Only draws the entity if it is in the player's fov.
-    if libtcod.map_is_in_fov(fov_map, entity.x, entity.y):
+def draw_entity(con, entity, fov_map, game_map):
+    # Only draws the entity if it is in the player's fov OR if the entity is stairs and has been explored.
+    if libtcod.map_is_in_fov(fov_map, entity.x, entity.y) or (entity.stairs and game_map.tiles[entity.x][entity.y].explored):
         # Sets the default font colour.
         libtcod.console_set_default_foreground(con, entity.color)
         # Places the entity on the console.

@@ -1,5 +1,5 @@
 'player_index', (0, 5)
-'entities', (512, 6133)
-'game_map', (6656, 92940)
-'message_log', (99840, 321)
+'entities', (512, 5559)
+'game_map', (6144, 92965)
+'message_log', (99328, 553)
 'game_state', (100352, 37)
