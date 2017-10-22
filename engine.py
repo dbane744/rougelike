@@ -150,11 +150,14 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
         # Key presses:
         move = action.get("move")
+        wait = action.get("wait")
         pickup = action.get("pickup")
         show_inventory = action.get("show_inventory")
         drop_inventory = action.get("drop_inventory")  # An inventory screen where you can only drop items.
         inventory_index = action.get("inventory_index")
         take_stairs = action.get("take_stairs")
+        level_up = action.get("level_up")
+        show_character_screen = action.get("show_character_screen")
         exit = action.get("exit")
         fullscreen = action.get("fullscreen")
 
@@ -190,6 +193,9 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
             # Sets the game state to the enemy's turn.
             game_state = GameStates.ENEMY_TURN
+
+        elif wait:
+            game_state = GameStates.ENEMY_TURN # Skips the player's turn.
 
         # If the pickup button was pressed (g).
         elif pickup and game_state == GameStates.PLAYERS_TURN:
@@ -243,6 +249,21 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                 else:
                     message_log.add_message(Message("There are no stairs here.", libtcod.yellow))
 
+        # Upgrades one of the player's stats on level up then return to previous game state.
+        if level_up:
+            if level_up == "hp":
+                player.fighter.max_hp += 20
+            elif level_up == "str":
+                player.fighter.power += 1
+            elif level_up == "def":
+                player.fighter.defense += 1
+
+            game_state = previous_game_state
+
+        if show_character_screen:
+            previous_game_state = game_state
+            game_state = GameStates.CHARACTER_SCREEN
+
         # If the game state has bene set to tarrgeting mode it will check if any left or right clicks have been made
         # Left clicks use the item stored in 'targeting_item' and will extend the results to player_turn_results.
         # Right click appends 'targeting_cancelled'. to the player results.
@@ -258,7 +279,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
         # Exits the game. UNLESS a menu is open then it just closes the menu.
         if exit:
-            if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+            if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY, GameStates.CHARACTER_SCREEN):
                 game_state = previous_game_state
             # If the user is targeting ESC only exist the targeting game state.
             elif game_state == GameStates.TARGETING:
@@ -281,6 +302,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             item_dropped = player_turn_result.get("item_dropped")
             targeting = player_turn_result.get("targeting")
             targeting_cancelled = player_turn_result.get("targeting_cancelled")
+            xp = player_turn_result.get('xp')
 
             if message:
                 message_log.add_message(message)
@@ -322,6 +344,18 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             if targeting_cancelled:
                 game_state = previous_game_state
                 message_log.add_message(Message("Targeting cancelled"))
+
+            if xp:
+                leveled_up = player.level.add_xp(xp) # Will be True if the player leveled up.
+                message_log.add_message(Message("You gain {0} experience points".format(xp)))
+
+                if leveled_up:
+                    message_log.add_message(Message(
+                        "Your experience enhances your abilities - you reached level {0}!".format(
+                            player.level.current_level), libtcod.yellow))
+                    previous_game_state=game_state
+                    game_state = GameStates.LEVEL_UP
+
 
             if item_dropped:
                 entities.append(item_dropped)

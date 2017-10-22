@@ -10,3 +10,5 @@ class GameStates(Enum):
     SHOW_INVENTORY = auto()
     DROP_INVENTORY = auto()
     TARGETING = auto() # A state where the player must select a tile to continue (i.e. when casting spells)
+    LEVEL_UP = auto()
+    CHARACTER_SCREEN = 8

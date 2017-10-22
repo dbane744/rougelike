@@ -7,11 +7,12 @@ class Fighter:
     """
     Encapsulates fighter methods and variables for entities that can fight.
     """
-    def __init__(self, hp, defense, power):
+    def __init__(self, hp, defense, power, xp=0):
         self.max_hp = hp        # Max hp
         self.hp = hp            # Current hp
         self.defense = defense  # Defense
         self.power = power      # Attack power
+        self.xp = xp            # The amount of xp rewarded on this fighter's death.
 
     def take_damage(self, amount):
         # Stores any game state changes.
@@ -19,9 +20,9 @@ class Fighter:
 
         self.hp -= amount
 
-        # If the player dies.
+        # If the fighter dies.
         if self.hp <= 0:
-            results.append({"dead": self.owner})
+            results.append({"dead": self.owner, 'xp' : self.xp})
 
         return results
 

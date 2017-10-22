@@ -19,6 +19,10 @@ def handle_keys(key, game_state):
     # Kills 2 birds with one stone - all inventory game states.
     elif game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
         return handle_inventory_keys(key)
+    elif game_state == GameStates.LEVEL_UP:
+        return handle_level_up_menu(key)
+    elif game_state == GameStates.CHARACTER_SCREEN:
+        return handle_character_screen(key)
 
     # If none of the above game states:
     return {}
@@ -44,6 +48,8 @@ def handle_player_turn_keys(key):
         return {"move": (-1, 1)}
     elif key.vk == libtcod.KEY_KP3:
         return {"move": (1, 1)}
+    elif key.vk == libtcod.KEY_KP5:
+        return {"wait": True} # Skips a turn.
     # Character keys.
     if key_char == "g":
         return {"pickup": True}
@@ -56,6 +62,8 @@ def handle_player_turn_keys(key):
         return {'fullscreen': True}
     elif key.vk == libtcod.KEY_ENTER:
         return {"take_stairs": True}
+    elif key_char == "c":
+        return {"show_character_screen": True}
     elif key.vk == libtcod.KEY_ESCAPE:
         # Exit the game.
         return {"exit": True}
@@ -143,6 +151,27 @@ def handle_main_menu(key):
     if key_char == "b":
         return {"load_game": True}
     if key_char == "c" or key.vk == libtcod.KEY_ESCAPE:
+        return {"exit": True}
+
+    return {}
+
+def handle_level_up_menu(key):
+
+    # The order of stats can be seen in level_up_menu() in menus.py.
+    if key:
+        key_char = chr(key.c)
+
+        if key_char == "a":
+            return {"level_up": "hp"}
+        elif key_char == "b":
+            return {"level_up": "str"}
+        elif key_char == "c":
+            return {"level_up": "def"}
+
+    return {}
+
+def handle_character_screen(key):
+    if key.vk == libtcod.KEY_ESCAPE:
         return {"exit": True}
 
     return {}
