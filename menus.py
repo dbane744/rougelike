@@ -46,7 +46,7 @@ def menu(con, header, options, width, screen_width, screen_height):
     y = int(screen_height / 2 - height / 2)
     libtcod.console_blit(window, 0, 0, width, height, 0, x, y, 1.0, 0.7)
 
-def inventory_menu(con, header, inventory, inventory_width, screen_width, screen_height):
+def inventory_menu(con, header, inventory, inventory_width, screen_width, screen_height, player):
     """
     Utilises menu() to create an inventory menu.
     :param con: The root console to blit to.
@@ -57,10 +57,19 @@ def inventory_menu(con, header, inventory, inventory_width, screen_width, screen
     :return: 
     """
     # Show a menu with each item of the inventory as an option.
-    if len(inventory.items) == 0:
+    if len(player.inventory.items) == 0:
         options = ["Inventory is empty."]
     else:
-        options = [item.name for item in inventory.items]
+        options = []
+
+        # Adds item names to inventory menu - also adds which equipment slot they are on if applicable.
+        for item in player.inventory.items:
+            if player.equipment.main_hand == item:
+                options.append("{} - (on main hand)".format(item.name))
+            elif player.equipment.off_hand == items:
+                options.append("{} - (on off hand)".format(item.name))
+            else:
+                options.append(item.name)
 
     # Creates the menu and blits it to the root console.
     menu(con, header, options, inventory_width, screen_width, screen_height)

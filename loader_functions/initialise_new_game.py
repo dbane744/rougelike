@@ -4,15 +4,19 @@ This Module encapsulates functions that setup the game prior to the game loop.
 
 import libtcodpy as libtcod
 
+from components.equipment import Equipment
+from components.equippable import Equippable
 from components.fighter import Fighter
 from components.inventory import Inventory
+from components.level import Level
 
 from entity import Entity
+from equipment_slots import EquipmentSlots
 from game_messages import MessageLog
 from game_states import GameStates
 from map_objects.game_map import GameMap
 from render_functions import RenderOrder
-from components.level import Level
+
 
 
 def get_constants():
@@ -93,14 +97,22 @@ def get_constants():
 
 def get_game_variables(constants):
     # Creates the player's components.
-    fighter_component = Fighter(hp=100, defense=1, power=4)
+    fighter_component = Fighter(hp=100, defense=1, power=2)
     inventory_component = Inventory(26)
     level_component = Level()
+    equipment_component = Equipment()
     # Creates the player object.
     player = Entity(0, 0, "@", libtcod.white, "Player", blocks=True, render_order=RenderOrder.ACTOR,
-                    fighter=fighter_component, inventory=inventory_component, level=level_component)
+                    fighter=fighter_component, inventory=inventory_component, level=level_component,
+                    equipment=equipment_component)
     # Creates a list of initial static entities.
     entities = [player]
+
+    # Gives the player a starting weapon.
+    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=2)
+    dagger = Entity(0, 0, "-", libtcod.sky, "Dagger", equippable=equippable_component)
+    player.inventory.add_item(dagger)
+    player.equipment.toggle_equip(dagger)
 
     # Creates the game map and calls its make_map function.
     game_map = GameMap(constants["map_width"], constants["map_height"])

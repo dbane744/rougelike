@@ -6,6 +6,8 @@ from components.stairs import Stairs
 from render_functions import RenderOrder
 from components.fighter import Fighter
 from components.ai import BasicMonster
+from components.equipment import EquipmentSlots
+from components.equippable import Equippable
 from entity import Entity
 from game_messages import Message
 from item_functions import cast_confuse, cast_fireball, cast_lightning, heal
@@ -177,10 +179,15 @@ class GameMap:
             "troll": from_dungeon_level([[15, 3],[30, 5],[60, 7]], self.dungeon_level)
             }
         item_chances = {
+            # Equipment
+            "sword": from_dungeon_level([[5, 4]], self.dungeon_level), # E.g 5% chance to spawn a sword if the dungeon level is at least level 4.
+            "shield": from_dungeon_level([[15, 8]], self.dungeon_level),
+            # Potions
             "healing_potion": 70, 
+            # Scrolls
             "lightning_scroll":from_dungeon_level([[25, 4]], self.dungeon_level), 
             "fireball_scroll": from_dungeon_level([[25, 6]], self.dungeon_level), 
-            "confusion_scroll":from_dungeon_level([[10, 2]], self.dungeon_level)
+            "confusion_scroll":from_dungeon_level([[10, 2]], self.dungeon_level),
             }
 
         ####### SPAWNS MONSTERS #######
@@ -227,8 +234,14 @@ class GameMap:
                 # Random int that dictates which item should be spawned.
                 item_choice = random_choice_from_dict(item_chances)
 
+                if item_choice == "sword":
+                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=3)
+                    item = Entity (x, y, "/", libtcod.sky, "Sword", equippable=equippable_component)
+                elif item_choice == "shield":
+                    equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=1)
+                    item = Entity (x, y, "[", libtcod.darker_orange, "Shield", equippable=equippable_component)
                 # SPAWNS HEALING POTION 
-                if item_choice == "healing_potion":
+                elif item_choice == "healing_potion":
                     # Giving the potion an item component allows it to be picked up.
                     item_component = Item(use_function=heal, amount=40)
                     item = Entity (x, y, "!", libtcod.violet, "Healing Potion", render_order=RenderOrder.ITEM,

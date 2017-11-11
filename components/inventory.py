@@ -46,7 +46,12 @@ class Inventory:
 
         # If the item does not have a use_function(a stored function in its attributes).
         if item_component.use_function is None:
-            results.append({"message": Message("The {0} cannot be used".format(item_entity.name), libtcod.yellow)})
+            equippable_component = item_entity.equippable 
+            # Attempts to equip the item if it has no use function.
+            if equippable_component:
+                results.append({"equip": item_entity})
+            else:
+                results.append({"message": Message("The {0} cannot be used".format(item_entity.name), libtcod.yellow)})
         else: # If the item requires targeting (and there is no predefined x or y target coordinates)
             if item_component.targeting and not (kwargs.get("target_x") or kwargs.get("target_y")):
                 results.append({"targeting": item_entity})
@@ -74,6 +79,11 @@ class Inventory:
 
     def drop_item(self, item):
         results = []
+
+        # This must be added to when adding a new slot.
+        # Dequips the item before dropping if it is equipped.
+        if self.owner.equipment.main_hand == item or self.owner.equipment.off_hand == item:
+            self.owner.equipment.toggle_equip(item)
 
         # The item will be dropped on the same tile as the player.
         # This changes the Entity x and y values of the item.

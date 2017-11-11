@@ -160,7 +160,7 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
 
         # Creates the inventory menu and blits it to the screen.
         inventory_menu(con, inventory_title,
-                       player.inventory, 50, screen_width, screen_height)
+                       player, 50, screen_width, screen_height)
 
     elif game_state == GameStates.LEVEL_UP:
         level_up_menu(con, "Level up! Choose a state to raise:", player, 40, screen_width, screen_height)

@@ -28,6 +28,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="components\ai.py" />
+    <Compile Include="components\equipment.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="components\equippable.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="components\fighter.py" />
     <Compile Include="components\inventory.py" />
     <Compile Include="components\item.py" />
@@ -37,6 +43,9 @@
     <Compile Include="death_functions.py" />
     <Compile Include="engine.py" />
     <Compile Include="entity.py" />
+    <Compile Include="equipment_slots.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="fov_functions.py" />
     <Compile Include="game_messages.py" />
     <Compile Include="game_states.py" />
